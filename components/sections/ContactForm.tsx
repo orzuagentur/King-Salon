@@ -97,15 +97,20 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
   }, [availability, masters, time]);
 
   useEffect(() => {
-    if (!time || !masterId) {
+    if (!time) {
+      return;
+    }
+
+    const autoMaster = availableMastersForTime[0];
+
+    if (!masterId) {
+      setMasterId(autoMaster?.id ?? "");
       return;
     }
 
     const stillAvailable = availableMastersForTime.some((master) => master.id === masterId);
 
     if (!stillAvailable) {
-      const autoMaster = availableMastersForTime[0];
-
       if (autoMaster) {
         setMasterId(autoMaster.id);
       } else {
@@ -135,10 +140,13 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
       </p>
 
       {state.success ? (
-        <p className="mt-6 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm text-gold-soft">
-          Vielen Dank. Ihre Terminanfrage wurde gespeichert. Wir bestätigen den Termin in Kürze per
-          Telefon oder Nachricht.
-        </p>
+        <div className="mt-6 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-4 text-sm text-gold-soft">
+          <p className="font-semibold text-foreground">Vielen Dank für Ihre Terminanfrage.</p>
+          <p className="mt-2 leading-6">
+            Ihre Anfrage wurde erfolgreich gesendet. Wir bestätigen den Termin in Kürze per Telefon
+            oder Nachricht und freuen uns schon auf Ihren Besuch im King Salon Celle.
+          </p>
+        </div>
       ) : null}
 
       {state.error ? (
@@ -265,7 +273,14 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
 
         <button
           className="touch-press inline-flex min-h-14 w-full touch-manipulation items-center justify-center rounded-full border border-gold bg-gold px-8 text-sm font-semibold uppercase tracking-[0.22em] text-black transition active:scale-[0.98] hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isPending || isLoadingSlots || !time || availableMastersForTime.length === 0}
+          disabled={
+            isPending ||
+            isLoadingSlots ||
+            !date ||
+            !time ||
+            !masterId ||
+            availableMastersForTime.length === 0
+          }
           type="submit"
         >
           {isPending ? "Wird gesendet…" : "Termin anfragen"}

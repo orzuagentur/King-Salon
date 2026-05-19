@@ -90,78 +90,95 @@ export async function submitBookingRequest(
     return { success: false, error: validationError };
   }
 
-  const availability = await getDateAvailability(booking.appointment_date);
+  try {
+    const availability = await getDateAvailability(booking.appointment_date);
 
-  if (availability.closed) {
-    return { success: false, error: availability.closedMessage };
-  }
+    if (availability.closed) {
+      return { success: false, error: availability.closedMessage };
+    }
 
-  if (!availability.slots.includes(booking.appointment_time)) {
-    return {
-      success: false,
-      error: "Diese Uhrzeit ist nicht verfügbar. Bitte wählen Sie einen anderen Termin.",
-    };
-  }
-
-  const resolution = resolveMasterForBooking(
-    availability,
-    booking.appointment_time,
-    booking.master_id,
-  );
-
-  if (!resolution.masterId) {
-    return {
-      success: false,
-      error: resolution.error ?? "Termin nicht verfügbar.",
-      suggestedMasterId: resolution.suggestedMasterIds?.[0],
-    };
-  }
-
-  const masters = await getActiveMasters();
-  const master = masters.find((item) => item.id === resolution.masterId);
-
-  if (!master) {
-    return { success: false, error: "Meister nicht gefunden." };
-  }
-
-  const supabase = await createSupabaseServerClient();
-  const { error: insertError } = await supabase.from("bookings").insert({
-    master_id: resolution.masterId,
-    customer_name: booking.customer_name,
-    customer_phone: booking.customer_phone,
-    customer_email: booking.customer_email,
-    message: booking.message || null,
-    appointment_date: booking.appointment_date,
-    appointment_time: `${booking.appointment_time}:00`,
-    status: "pending",
-  });
-
-  if (insertError) {
-    if (insertError.code === "23505") {
+    if (!availability.slots.includes(booking.appointment_time)) {
       return {
         success: false,
-        error:
-          "Dieser Termin wurde gerade vergeben. Bitte wählen Sie eine andere Uhrzeit oder einen anderen Meister.",
+        error: "Diese Uhrzeit ist nicht verfügbar. Bitte wählen Sie einen anderen Termin.",
       };
     }
 
+    const resolution = resolveMasterForBooking(
+      availability,
+      booking.appointment_time,
+      booking.master_id,
+    );
+
+    if (!resolution.masterId) {
+      return {
+        success: false,
+        error: resolution.error ?? "Termin nicht verfügbar.",
+        suggestedMasterId: resolution.suggestedMasterIds?.[0],
+      };
+    }
+
+    const masters = await getActiveMasters();
+    const master = masters.find((item) => item.id === resolution.masterId);
+
+    if (!master) {
+      return { success: false, error: "Meister nicht gefunden." };
+    }
+
+    const supabase = await createSupabaseServerClient();
+    const { error: insertError } = await supabase.from("bookings").insert({
+      master_id: resolution.masterId,
+      customer_name: booking.customer_name,
+      customer_phone: booking.customer_phone,
+      customer_email: booking.customer_email,
+      message: booking.message || null,
+      appointment_date: booking.appointment_date,
+      appointment_time: `${booking.appointment_time}:00`,
+      status: "pending",
+    });
+
+    if (insertError) {
+      console.error("Booking insert failed", insertError);
+
+      if (insertError.code === "23505") {
+        return {
+          success: false,
+          error:
+            "Dieser Termin wurde gerade vergeben. Bitte wählen Sie eine andere Uhrzeit oder einen anderen Meister.",
+        };
+      }
+
+      return {
+        success: false,
+        error:
+          "Die Buchung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut oder buchen Sie per WhatsApp.",
+      };
+    }
+
+    const telegramMessage = formatBookingTelegramMessage({
+      name: booking.customer_name,
+      phone: booking.customer_phone,
+      email: booking.customer_email,
+      message: booking.message,
+      appointmentDate: booking.appointment_date,
+      appointmentTime: booking.appointment_time,
+      masterName: master.name,
+    });
+
+    const telegramResult = await sendTelegramMessage(telegramMessage);
+
+    if (!telegramResult.success) {
+      console.error("Telegram notification failed", telegramResult.error);
+    }
+
+    return { success: true, error: "" };
+  } catch (error) {
+    console.error("Booking request failed", error);
+
     return {
       success: false,
-      error: "Die Buchung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      error:
+        "Die Buchung konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut oder buchen Sie per WhatsApp.",
     };
   }
-
-  const telegramMessage = formatBookingTelegramMessage({
-    name: booking.customer_name,
-    phone: booking.customer_phone,
-    email: booking.customer_email,
-    message: booking.message,
-    appointmentDate: booking.appointment_date,
-    appointmentTime: booking.appointment_time,
-    masterName: master.name,
-  });
-
-  await sendTelegramMessage(telegramMessage);
-
-  return { success: true, error: "" };
 }
