@@ -60,7 +60,7 @@ export function LuxuryHeroClient({
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <LuxuryButton href={`tel:${phone}`}>Termin anfragen</LuxuryButton>
+              <LuxuryButton href="#termin">Termin anfragen</LuxuryButton>
               <LuxuryButton href={instagramUrl} variant="secondary">
                 Instagram ansehen
               </LuxuryButton>

@@ -73,7 +73,7 @@ export function PricingSectionClient({ services }: PricingSectionClientProps) {
                     ))}
                   </ul>
 
-                  <LuxuryButton className="relative mt-auto w-full" href="tel:+491738882560">
+                  <LuxuryButton className="relative mt-auto w-full" href="#termin">
                     Termin anfragen
                   </LuxuryButton>
                 </motion.article>
@@ -111,7 +111,7 @@ export function PricingSectionClient({ services }: PricingSectionClientProps) {
                     ))}
                   </ul>
 
-                  <LuxuryButton className="relative mt-auto w-full" href="tel:+491738882560">
+                  <LuxuryButton className="relative mt-auto w-full" href="#termin">
                     Termin anfragen
                   </LuxuryButton>
                 </motion.article>

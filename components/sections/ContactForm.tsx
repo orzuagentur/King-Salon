@@ -1,11 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState, useTransition } from "react";
+import { type FormEvent, useEffect, useMemo, useState, useTransition } from "react";
 
-import {
-  initialBookingState,
-  submitBookingRequest,
-} from "@/app/actions/booking";
 import type { DateAvailability, MasterOption } from "@/lib/booking/types";
 
 const inputClassName = "luxury-input mt-2";
@@ -18,15 +14,24 @@ type ContactFormProps = {
   whatsappUrl: string;
 };
 
+type BookingFormState = {
+  error: string;
+  success: boolean;
+  suggestedMasterId?: string;
+};
+
+const initialBookingState: BookingFormState = {
+  error: "",
+  success: false,
+};
+
 function getTodayIso() {
   return new Date().toISOString().slice(0, 10);
 }
 
 export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFormProps) {
-  const [state, formAction, isPending] = useActionState(
-    submitBookingRequest,
-    initialBookingState,
-  );
+  const [state, setState] = useState<BookingFormState>(initialBookingState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingSlots, startTransition] = useTransition();
 
   const [date, setDate] = useState("");
@@ -126,8 +131,56 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
         ? "Zu dieser Uhrzeit ist kein Meister frei – bitte andere Zeit wählen."
         : "Wählen Sie zuerst Datum und Uhrzeit.";
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    setIsSubmitting(true);
+    setState(initialBookingState);
+
+    try {
+      const response = await fetch("/api/booking/request", {
+        body: formData,
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("booking request failed");
+      }
+
+      const result = (await response.json()) as BookingFormState;
+      setState(result);
+
+      if (result.success) {
+        form.reset();
+        setAvailability(null);
+        setAvailabilityNotice("");
+        setDate("");
+        setMasterId("");
+        setTime("");
+      }
+    } catch {
+      setState({
+        error:
+          "Die Buchung konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut oder buchen Sie per WhatsApp.",
+        success: false,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
-    <div className="rounded-[1.75rem] border border-border bg-surface p-5 shadow-luxury sm:rounded-[2rem] sm:p-8">
+    <div
+      className="scroll-mt-24 rounded-[1.75rem] border border-border bg-surface p-5 shadow-luxury sm:rounded-[2rem] sm:p-8"
+      id="termin"
+    >
       <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-gold sm:text-xs">
         Terminbuchung
       </p>
@@ -161,14 +214,14 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
         </p>
       ) : null}
 
-      <form action={formAction} className="mt-8 space-y-5">
+      <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
         <input autoComplete="off" className="hidden" name="website" tabIndex={-1} type="text" />
 
         <label className="block text-sm font-medium text-foreground">
           Datum *
           <input
             className={inputClassName}
-            disabled={isPending}
+            disabled={isSubmitting}
             min={minDate}
             name="appointment_date"
             onChange={(event) => setDate(event.target.value)}
@@ -182,7 +235,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
           Uhrzeit *
           <select
             className={selectClassName}
-            disabled={isPending || !date || isLoadingSlots || availability?.closed}
+            disabled={isSubmitting || !date || isLoadingSlots || availability?.closed}
             name="appointment_time"
             onChange={(event) => setTime(event.target.value)}
             required
@@ -207,7 +260,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
           Meister *
           <select
             className={selectClassName}
-            disabled={isPending || !time || availableMastersForTime.length === 0}
+            disabled={isSubmitting || !time || availableMastersForTime.length === 0}
             name="master_id"
             onChange={(event) => setMasterId(event.target.value)}
             required
@@ -233,14 +286,20 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
 
         <label className="block text-sm font-medium text-foreground">
           Name *
-          <input className={inputClassName} disabled={isPending} name="name" required type="text" />
+          <input
+            className={inputClassName}
+            disabled={isSubmitting}
+            name="name"
+            required
+            type="text"
+          />
         </label>
 
         <label className="block text-sm font-medium text-foreground">
           Telefon *
           <input
             className={inputClassName}
-            disabled={isPending}
+            disabled={isSubmitting}
             inputMode="tel"
             name="phone"
             required
@@ -253,7 +312,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
           <input
             autoComplete="email"
             className={inputClassName}
-            disabled={isPending}
+            disabled={isSubmitting}
             inputMode="email"
             name="email"
             required
@@ -265,7 +324,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
           Nachricht
           <textarea
             className={textareaClassName}
-            disabled={isPending}
+            disabled={isSubmitting}
             name="message"
             placeholder="Service, Wünsche oder Fragen (optional)"
           />
@@ -274,7 +333,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
         <button
           className="touch-press inline-flex min-h-14 w-full touch-manipulation items-center justify-center rounded-full border border-gold bg-gold px-8 text-sm font-semibold uppercase tracking-[0.22em] text-black transition active:scale-[0.98] hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-60"
           disabled={
-            isPending ||
+            isSubmitting ||
             isLoadingSlots ||
             !date ||
             !time ||
@@ -283,7 +342,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
           }
           type="submit"
         >
-          {isPending ? "Wird gesendet…" : "Termin anfragen"}
+          {isSubmitting ? "Wird gesendet…" : "Termin anfragen"}
         </button>
       </form>
 

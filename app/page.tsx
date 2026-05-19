@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { FloatingContactActions } from "@/components/layout/FloatingContactActions";
 import { Navbar } from "@/components/layout/Navbar";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { GallerySection } from "@/components/sections/GallerySection";
@@ -9,6 +10,7 @@ import { ReviewsSection } from "@/components/sections/ReviewsSection";
 import { ServicesSection } from "@/components/sections/ServicesSection";
 import { LocalBusinessInfo } from "@/components/seo/LocalBusinessInfo";
 import { getSeoSettings } from "@/lib/data/seo";
+import { getSalonContact } from "@/lib/data/settings";
 import { createLocalPageMetadata } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/seo/site";
 
@@ -25,6 +27,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
+  const contact = await getSalonContact();
+
   return (
     <>
       <Navbar />
@@ -35,6 +39,7 @@ export default async function Home() {
       <ReviewsSection />
       <ContactSection />
       <LocalBusinessInfo />
+      <FloatingContactActions phone={contact.phone} whatsappUrl={contact.whatsapp} />
     </>
   );
 }

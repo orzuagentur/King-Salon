@@ -89,7 +89,7 @@ export function Navbar() {
             </a>
             <a
               className="touch-press hidden min-h-11 items-center rounded-full border border-gold bg-gold px-4 text-xs font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-gold-soft md:inline-flex"
-              href="tel:+491738882560"
+              href="#termin"
             >
               Termin
             </a>
@@ -160,7 +160,7 @@ export function Navbar() {
               </ul>
 
               <div className="mt-auto flex flex-col gap-3 pt-10">
-                <LuxuryButton className="w-full" href="tel:+491738882560" onClick={closeMenu}>
+                <LuxuryButton className="w-full" href="#termin" onClick={closeMenu}>
                   Termin anfragen
                 </LuxuryButton>
                 <LuxuryButton
