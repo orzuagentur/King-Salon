@@ -34,6 +34,7 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
   const [time, setTime] = useState("");
   const [masterId, setMasterId] = useState("");
   const [availability, setAvailability] = useState<DateAvailability | null>(null);
+  const [availabilityNotice, setAvailabilityNotice] = useState("");
 
   const minDate = getTodayIso();
 
@@ -47,6 +48,11 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
     startTransition(async () => {
       const result = await fetchDateAvailability(date);
       setAvailability(result);
+      setAvailabilityNotice(
+        result?.closed && result.closedMessage && result.slots.length === 0
+          ? result.closedMessage
+          : "",
+      );
       setTime((current) => {
         if (current && result?.slots.includes(current)) {
           return current;
@@ -122,6 +128,12 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
       {state.error ? (
         <p className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {state.error}
+        </p>
+      ) : null}
+
+      {availabilityNotice ? (
+        <p className="mt-6 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm text-gold-soft">
+          {availabilityNotice}
         </p>
       ) : null}
 

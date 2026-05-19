@@ -1,3 +1,7 @@
+export function isSupabaseConfigured() {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+}
+
 export function getSupabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -10,7 +14,7 @@ export function getSupabaseConfig() {
 
   if (!url || !anonKey) {
     throw new Error(
-      `Supabase-Konfiguration fehlt: ${missingKeys.join(", ")}. Bitte .env.local prüfen.`,
+      `Supabase-Konfiguration fehlt: ${missingKeys.join(", ")}. Bitte .env.local oder Vercel Environment Variables prüfen.`,
     );
   }
 
