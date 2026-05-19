@@ -2,7 +2,6 @@
 
 import { useActionState, useEffect, useMemo, useState, useTransition } from "react";
 
-import { fetchDateAvailability } from "@/app/actions/booking-availability";
 import {
   initialBookingState,
   submitBookingRequest,
@@ -46,19 +45,36 @@ export function ContactForm({ masters: initialMasters, whatsappUrl }: ContactFor
     }
 
     startTransition(async () => {
-      const result = await fetchDateAvailability(date);
-      setAvailability(result);
-      setAvailabilityNotice(
-        result?.closed && result.closedMessage && result.slots.length === 0
-          ? result.closedMessage
-          : "",
-      );
-      setTime((current) => {
-        if (current && result?.slots.includes(current)) {
-          return current;
+      try {
+        const response = await fetch(
+          `/api/booking/availability?date=${encodeURIComponent(date)}`,
+          { cache: "no-store" },
+        );
+
+        if (!response.ok) {
+          throw new Error("availability request failed");
         }
-        return "";
-      });
+
+        const result = (await response.json()) as DateAvailability | null;
+        setAvailability(result);
+        setAvailabilityNotice(
+          result?.closed && result.closedMessage && result.slots.length === 0
+            ? result.closedMessage
+            : "",
+        );
+        setTime((current) => {
+          if (current && result?.slots.includes(current)) {
+            return current;
+          }
+          return "";
+        });
+      } catch {
+        setAvailability(null);
+        setAvailabilityNotice(
+          "Verfügbarkeit konnte nicht geladen werden. Bitte später erneut versuchen oder per WhatsApp buchen.",
+        );
+        setTime("");
+      }
     });
   }, [date]);
 

@@ -24,8 +24,7 @@ function buildBookedMap(
 }
 
 export async function getDateAvailability(dateIso: string): Promise<DateAvailability> {
-  const masters = await getActiveMasters();
-  const openingHours = await getOpeningHours();
+  const [masters, openingHours] = await Promise.all([getActiveMasters(), getOpeningHours()]);
   const dayHours = getOpeningHoursForDate(dateIso, openingHours);
 
   if (!dayHours || dayHours.hours === "Geschlossen") {

@@ -26,6 +26,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
 7. Meister & Terminbuchung:
    - `migrations/20260519150000_masters_and_bookings.sql`
    - `migrations/20260519150100_booking_rls.sql`
+   - `migrations/20260519150200_bookings_public_read_slots.sql`
 
 ## Row Level Security
 

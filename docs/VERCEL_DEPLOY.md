@@ -33,6 +33,7 @@ Im **SQL Editor** nacheinander ausführen (falls noch nicht geschehen):
 4. `supabase/migrations/20260519140000_configure_rls.sql`
 5. `supabase/migrations/20260519150000_masters_and_bookings.sql`
 6. `supabase/migrations/20260519150100_booking_rls.sql`
+7. `supabase/migrations/20260519150200_bookings_public_read_slots.sql`
 
 Ohne Schritt 5–6 funktionieren Meister und Terminbuchung nicht.
 
@@ -63,6 +64,8 @@ on conflict (id) do update set email = excluded.email, role = excluded.role;
 ```
 
 Die UUID finden Sie bei Authentication → Users → Klick auf den Nutzer → **User UID**.
+
+**Wichtig:** `admins.id` muss **exakt** dieselbe UUID sein wie der Auth-Nutzer (`auth.users.id`), nicht nur dieselbe E-Mail. Sonst: schwarzer Bildschirm oder „Kein Admin-Zugriff“.
 
 ### Anmeldung
 

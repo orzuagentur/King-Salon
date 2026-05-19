@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { isAdminUser } from "@/lib/auth/is-admin-user";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -40,13 +41,22 @@ export async function signIn(formData: FormData) {
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: signInData, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
     redirect(`/admin/anmelden?fehler=${encodeURIComponent(mapAuthErrorMessage(error.message))}`);
+  }
+
+  const userId = signInData.user?.id;
+
+  if (!userId || !(await isAdminUser(supabase, userId))) {
+    await supabase.auth.signOut();
+    redirect(
+      "/admin/anmelden?fehler=Kein%20Admin-Zugriff.%20In%20Supabase%20muss%20public.admins%20die%20gleiche%20UUID%20wie%20der%20Auth-Nutzer%20haben.",
+    );
   }
 
   redirect("/admin");

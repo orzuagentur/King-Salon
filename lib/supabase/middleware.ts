@@ -1,12 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { getSupabaseConfig } from "@/lib/supabase/config";
+import { isAdminUser } from "@/lib/auth/is-admin-user";
+import { getSupabaseConfig, isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Database } from "@/types/database";
 
 const loginPath = "/admin/anmelden";
 
 export async function updateSession(request: NextRequest) {
+  if (!isSupabaseConfigured()) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -47,11 +52,15 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && isLoginPage) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/admin";
-    redirectUrl.search = "";
+    const hasAdminAccess = await isAdminUser(supabase, user.id);
 
-    return NextResponse.redirect(redirectUrl);
+    if (hasAdminAccess) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/admin";
+      redirectUrl.search = "";
+
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return supabaseResponse;

@@ -13,7 +13,7 @@ export async function verifyAdminSession() {
   const { data: admin, error } = await supabase
     .from("admins")
     .select("id, email, role")
-    .eq("email", user.email)
+    .eq("id", user.id)
     .maybeSingle();
 
   if (error || !admin) {
