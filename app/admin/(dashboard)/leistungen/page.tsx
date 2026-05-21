@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AdminAlert } from "@/components/admin/AdminAlert";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { PricingQuickEdit } from "@/components/admin/pricing/PricingQuickEdit";
 import { ServicesManager } from "@/components/admin/services/ServicesManager";
@@ -11,17 +10,9 @@ export const metadata: Metadata = {
   title: "Leistungen | King Salon Admin",
 };
 
-type AdminServicesPageProps = {
-  searchParams: Promise<{
-    erfolg?: string;
-    fehler?: string;
-  }>;
-};
-
-export default async function AdminServicesPage({ searchParams }: AdminServicesPageProps) {
+export default async function AdminServicesPage() {
   const { admin } = await requireAdmin();
   const services = await getAllServices();
-  const params = await searchParams;
 
   return (
     <div className="space-y-8">
@@ -31,9 +22,6 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Leistungen"
       />
-
-      <AdminAlert message={params.erfolg} type="success" />
-      <AdminAlert message={params.fehler} type="error" />
 
       <PricingQuickEdit services={services} />
       <ServicesManager services={services} />

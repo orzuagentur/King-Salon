@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteBooking, updateBookingStatus } from "@/app/admin/(dashboard)/termine/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { Booking } from "@/lib/data/bookings";
 
 type BookingsManagerProps = {
@@ -109,26 +110,24 @@ export function BookingsManager({ bookings }: BookingsManagerProps) {
                       <option value="cancelled">Storniert</option>
                       <option value="completed">Abgeschlossen</option>
                     </select>
-                    <button
-                      className="h-10 shrink-0 rounded-full bg-gold px-4 text-xs font-semibold uppercase tracking-[0.2em] text-black"
-                      type="submit"
-                    >
+                    <AdminSubmitButton className="h-10 shrink-0 px-4 tracking-[0.2em]">
                       Speichern
-                    </button>
+                    </AdminSubmitButton>
                   </form>
                   <form action={deleteBooking}>
                     <input name="id" type="hidden" value={booking.id} />
-                    <button
-                      className="h-10 w-full rounded-full border border-red-500/40 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300 sm:w-auto"
+                    <AdminSubmitButton
+                      className="h-10 w-full tracking-[0.2em] sm:w-auto"
+                      loadingLabel="Wird gelöscht…"
                       onClick={(event) => {
                         if (!window.confirm("Diesen Termin wirklich löschen?")) {
                           event.preventDefault();
                         }
                       }}
-                      type="submit"
+                      variant="danger"
                     >
                       Löschen
-                    </button>
+                    </AdminSubmitButton>
                   </form>
                 </div>
               </div>

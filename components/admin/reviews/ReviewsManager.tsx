@@ -7,6 +7,7 @@ import {
   deleteReview,
   updateReview,
 } from "@/app/admin/(dashboard)/bewertungen/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import { StarRating } from "@/components/ui/StarRating";
 import type { Review } from "@/lib/reviews/types";
 
@@ -111,12 +112,7 @@ export function ReviewsManager({ reviews }: ReviewsManagerProps) {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <button
-              className="h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black transition hover:bg-gold-soft"
-              type="submit"
-            >
-              Speichern
-            </button>
+            <AdminSubmitButton>Speichern</AdminSubmitButton>
             <button
               className="h-11 rounded-full border border-border px-6 text-xs font-semibold uppercase tracking-[0.24em] text-foreground transition hover:border-gold hover:text-gold"
               onClick={() => {
@@ -167,17 +163,18 @@ export function ReviewsManager({ reviews }: ReviewsManagerProps) {
                 </button>
                 <form action={deleteReview}>
                   <input name="id" type="hidden" value={review.id} />
-                  <button
-                    className="h-10 rounded-full border border-red-500/40 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300 transition hover:border-red-400"
+                  <AdminSubmitButton
+                    className="h-10 tracking-[0.2em]"
+                    loadingLabel="Wird gelöscht…"
                     onClick={(event) => {
                       if (!window.confirm(`Bewertung von „${review.name}“ wirklich löschen?`)) {
                         event.preventDefault();
                       }
                     }}
-                    type="submit"
+                    variant="danger"
                   >
                     Löschen
-                  </button>
+                  </AdminSubmitButton>
                 </form>
               </div>
             </div>

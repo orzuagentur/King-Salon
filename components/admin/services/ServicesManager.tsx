@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { createService, deleteService, updateService } from "@/app/admin/(dashboard)/leistungen/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import { ServiceForm } from "@/components/admin/services/ServiceForm";
 import type { Service } from "@/lib/data/services";
 import { formatPrice } from "@/lib/format/price";
@@ -101,17 +102,18 @@ export function ServicesManager({ services }: ServicesManagerProps) {
                 </button>
                 <form action={deleteService}>
                   <input name="id" type="hidden" value={service.id} />
-                  <button
-                    className="h-10 w-full rounded-full border border-red-500/40 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300 transition hover:border-red-400 hover:text-red-200 sm:w-auto"
+                  <AdminSubmitButton
+                    className="h-10 w-full tracking-[0.2em] sm:w-auto"
+                    loadingLabel="Wird gelöscht…"
                     onClick={(event) => {
                       if (!window.confirm(`„${service.title}“ wirklich löschen?`)) {
                         event.preventDefault();
                       }
                     }}
-                    type="submit"
+                    variant="danger"
                   >
                     Löschen
-                  </button>
+                  </AdminSubmitButton>
                 </form>
               </div>
             </div>

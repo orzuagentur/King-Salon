@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AdminAlert } from "@/components/admin/AdminAlert";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { GalleryManager } from "@/components/admin/gallery/GalleryManager";
 import { requireAdmin } from "@/lib/auth/admin";
@@ -10,17 +9,9 @@ export const metadata: Metadata = {
   title: "Galerie | King Salon Admin",
 };
 
-type AdminGalleryPageProps = {
-  searchParams: Promise<{
-    erfolg?: string;
-    fehler?: string;
-  }>;
-};
-
-export default async function AdminGalleryPage({ searchParams }: AdminGalleryPageProps) {
+export default async function AdminGalleryPage() {
   const { admin } = await requireAdmin();
   const items = await getAllGalleryItems();
-  const params = await searchParams;
 
   return (
     <div className="space-y-8">
@@ -30,9 +21,6 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Galerie"
       />
-
-      <AdminAlert message={params.erfolg} type="success" />
-      <AdminAlert message={params.fehler} type="error" />
 
       <GalleryManager items={items} />
     </div>

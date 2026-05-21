@@ -8,6 +8,7 @@ import {
   deleteGalleryItem,
   updateGalleryItem,
 } from "@/app/admin/(dashboard)/galerie/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import { GalleryForm } from "@/components/admin/gallery/GalleryForm";
 import type { GalleryItem } from "@/lib/data/gallery";
 import { resolveImageUrl } from "@/lib/storage/urls";
@@ -98,17 +99,18 @@ export function GalleryManager({ items }: GalleryManagerProps) {
                   <form action={deleteGalleryItem}>
                     <input name="id" type="hidden" value={item.id} />
                     <input name="image" type="hidden" value={item.image} />
-                    <button
-                      className="h-10 w-full rounded-full border border-red-500/40 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300 transition hover:border-red-400 hover:text-red-200 sm:w-auto"
+                    <AdminSubmitButton
+                      className="h-10 w-full tracking-[0.2em] sm:w-auto"
+                      loadingLabel="Wird gelöscht…"
                       onClick={(event) => {
                         if (!window.confirm("Galeriebild wirklich löschen?")) {
                           event.preventDefault();
                         }
                       }}
-                      type="submit"
+                      variant="danger"
                     >
                       Löschen
-                    </button>
+                    </AdminSubmitButton>
                   </form>
                 </div>
               </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { createMaster, deleteMaster, updateMaster } from "@/app/admin/(dashboard)/meister/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { Master } from "@/lib/data/masters";
 
 type MastersManagerProps = {
@@ -83,12 +84,7 @@ export function MastersManager({ masters }: MastersManagerProps) {
             </label>
           </div>
           <div className="mt-6 flex gap-3">
-            <button
-              className="h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black"
-              type="submit"
-            >
-              Speichern
-            </button>
+            <AdminSubmitButton>Speichern</AdminSubmitButton>
             <button
               className="h-11 rounded-full border border-border px-6 text-xs font-semibold uppercase tracking-[0.24em]"
               onClick={() => {
@@ -130,17 +126,18 @@ export function MastersManager({ masters }: MastersManagerProps) {
                 </button>
                 <form action={deleteMaster}>
                   <input name="id" type="hidden" value={master.id} />
-                  <button
-                    className="h-10 rounded-full border border-red-500/40 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300"
+                  <AdminSubmitButton
+                    className="h-10 tracking-[0.2em]"
+                    loadingLabel="Wird gelöscht…"
                     onClick={(event) => {
                       if (!window.confirm(`„${master.name}“ wirklich löschen?`)) {
                         event.preventDefault();
                       }
                     }}
-                    type="submit"
+                    variant="danger"
                   >
                     Löschen
-                  </button>
+                  </AdminSubmitButton>
                 </form>
               </div>
             </div>

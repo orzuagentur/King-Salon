@@ -2,6 +2,7 @@
 
 import { updateHomepageContent } from "@/app/admin/(dashboard)/startseite/actions";
 import { HomepageImageField } from "@/components/admin/homepage/HomepageImageField";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { HomepageContent } from "@/lib/homepage/types";
 
 type HomepageContentFormProps = {
@@ -204,12 +205,7 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
         </section>
       </div>
 
-      <button
-        className="mt-6 h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black transition hover:bg-gold-soft"
-        type="submit"
-      >
-        Startseite speichern
-      </button>
+      <AdminSubmitButton className="mt-6">Startseite speichern</AdminSubmitButton>
     </form>
   );
 }

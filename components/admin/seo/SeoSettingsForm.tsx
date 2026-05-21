@@ -1,4 +1,5 @@
 import { updateSeoSettings } from "@/app/admin/(dashboard)/seo/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { SeoSettings } from "@/lib/seo/defaults";
 
 type SeoSettingsFormProps = {
@@ -62,12 +63,7 @@ export function SeoSettingsForm({ seo }: SeoSettingsFormProps) {
         </div>
       </div>
 
-      <button
-        className="mt-6 h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black transition hover:bg-gold-soft"
-        type="submit"
-      >
-        SEO speichern
-      </button>
+      <AdminSubmitButton className="mt-6">SEO speichern</AdminSubmitButton>
     </form>
   );
 }

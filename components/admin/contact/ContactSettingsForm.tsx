@@ -1,4 +1,5 @@
 import { updateContactSettings } from "@/app/admin/(dashboard)/kontakt/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import { defaultSalonContact } from "@/lib/contact/defaults";
 import { mapSettingsToContact } from "@/lib/contact/map-settings";
 import type { Settings } from "@/lib/data/settings";
@@ -120,12 +121,7 @@ export function ContactSettingsForm({ settings }: ContactSettingsFormProps) {
         </label>
       </div>
 
-      <button
-        className="mt-6 h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black transition hover:bg-gold-soft"
-        type="submit"
-      >
-        Kontaktdaten speichern
-      </button>
+      <AdminSubmitButton className="mt-6">Kontaktdaten speichern</AdminSubmitButton>
     </form>
   );
 }

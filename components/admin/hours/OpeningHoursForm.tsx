@@ -1,4 +1,5 @@
 import { updateOpeningHours } from "@/app/admin/(dashboard)/oeffnungszeiten/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import { weekDays } from "@/lib/opening-hours/defaults";
 import type { OpeningHoursEntry } from "@/lib/opening-hours/types";
 
@@ -43,12 +44,7 @@ export function OpeningHoursForm({ openingHours }: OpeningHoursFormProps) {
         ))}
       </div>
 
-      <button
-        className="mt-6 h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black transition hover:bg-gold-soft"
-        type="submit"
-      >
-        Öffnungszeiten speichern
-      </button>
+      <AdminSubmitButton className="mt-6">Öffnungszeiten speichern</AdminSubmitButton>
     </form>
   );
 }

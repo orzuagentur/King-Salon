@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { GalleryItem } from "@/lib/data/gallery";
 import { resolveImageUrl } from "@/lib/storage/urls";
 import { uploadGalleryImage } from "@/lib/storage/upload";
@@ -162,13 +163,7 @@ export function GalleryForm({ action, item, onCancel, submitLabel, title }: Gall
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <button
-          className="h-11 rounded-full bg-gold px-6 text-xs font-semibold uppercase tracking-[0.24em] text-black transition hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!imageUrl || isUploading}
-          type="submit"
-        >
-          {submitLabel}
-        </button>
+        <AdminSubmitButton disabled={!imageUrl || isUploading}>{submitLabel}</AdminSubmitButton>
         {onCancel ? (
           <button
             className="h-11 rounded-full border border-border px-6 text-xs font-semibold uppercase tracking-[0.24em] text-foreground transition hover:border-gold hover:text-gold"

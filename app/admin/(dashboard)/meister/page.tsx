@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AdminAlert } from "@/components/admin/AdminAlert";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { MastersManager } from "@/components/admin/masters/MastersManager";
 import { requireAdmin } from "@/lib/auth/admin";
@@ -10,17 +9,9 @@ export const metadata: Metadata = {
   title: "Meister | King Salon Admin",
 };
 
-type AdminMastersPageProps = {
-  searchParams: Promise<{
-    erfolg?: string;
-    fehler?: string;
-  }>;
-};
-
-export default async function AdminMastersPage({ searchParams }: AdminMastersPageProps) {
+export default async function AdminMastersPage() {
   const { admin } = await requireAdmin();
   const masters = await getAllMasters();
-  const params = await searchParams;
 
   return (
     <div className="space-y-8">
@@ -30,9 +21,6 @@ export default async function AdminMastersPage({ searchParams }: AdminMastersPag
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Meister"
       />
-
-      <AdminAlert message={params.erfolg} type="success" />
-      <AdminAlert message={params.fehler} type="error" />
 
       <MastersManager masters={masters} />
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { updateServicePrice } from "@/app/admin/(dashboard)/leistungen/actions";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { Service } from "@/lib/data/services";
 import { formatPriceLabel } from "@/lib/format/price";
 
@@ -52,12 +53,9 @@ export function PricingQuickEdit({ services }: PricingQuickEditProps) {
               />
             </label>
 
-            <button
-              className="h-11 shrink-0 rounded-full bg-gold px-5 text-xs font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-gold-soft"
-              type="submit"
-            >
+            <AdminSubmitButton className="shrink-0 px-5 tracking-[0.2em]">
               Speichern
-            </button>
+            </AdminSubmitButton>
           </form>
         ))}
       </div>

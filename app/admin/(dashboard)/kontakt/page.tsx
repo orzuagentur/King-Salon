@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AdminAlert } from "@/components/admin/AdminAlert";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { ContactSettingsForm } from "@/components/admin/contact/ContactSettingsForm";
 import { requireAdmin } from "@/lib/auth/admin";
@@ -10,17 +9,9 @@ export const metadata: Metadata = {
   title: "Kontakt | King Salon Admin",
 };
 
-type AdminContactPageProps = {
-  searchParams: Promise<{
-    erfolg?: string;
-    fehler?: string;
-  }>;
-};
-
-export default async function AdminContactPage({ searchParams }: AdminContactPageProps) {
+export default async function AdminContactPage() {
   const { admin } = await requireAdmin();
   const settings = await getSettings();
-  const params = await searchParams;
 
   return (
     <div className="space-y-8">
@@ -30,9 +21,6 @@ export default async function AdminContactPage({ searchParams }: AdminContactPag
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Kontakt"
       />
-
-      <AdminAlert message={params.erfolg} type="success" />
-      <AdminAlert message={params.fehler} type="error" />
 
       <ContactSettingsForm settings={settings} />
     </div>
