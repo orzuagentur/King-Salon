@@ -1,6 +1,8 @@
-import { openingHours, salonContact, salonReviews, salonReviewsSummary } from "@/lib/content/salon";
+import { openingHours, salonContact } from "@/lib/content/salon";
+import type { ReviewDisplay } from "@/lib/reviews/types";
 import { localBusiness } from "@/lib/seo/local";
 import { siteConfig } from "@/lib/seo/site";
+import { buildReviewsSummary } from "@/lib/data/reviews";
 
 const dayOfWeekMap: Record<string, string> = {
   Montag: "Monday",
@@ -68,8 +70,9 @@ export function getWebsiteSchema() {
   };
 }
 
-export function getHairSalonSchema() {
+export function getHairSalonSchema(reviews: ReviewDisplay[]) {
   const imageUrl = `${siteConfig.url}${siteConfig.ogImage}`;
+  const summary = buildReviewsSummary(reviews);
 
   return {
     "@type": "HairSalon",
@@ -105,12 +108,12 @@ export function getHairSalonSchema() {
     ],
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: salonReviewsSummary.averageRating,
-      reviewCount: salonReviewsSummary.reviewCount,
+      ratingValue: summary.averageRating,
+      reviewCount: summary.reviewCount,
       bestRating: 5,
       worstRating: 1,
     },
-    review: salonReviews.map((review) => ({
+    review: reviews.map((review) => ({
       "@type": "Review",
       author: {
         "@type": "Person",
@@ -128,9 +131,9 @@ export function getHairSalonSchema() {
   };
 }
 
-export function getSchemaOrgGraph() {
+export function getSchemaOrgGraph(reviews: ReviewDisplay[]) {
   return {
     "@context": "https://schema.org",
-    "@graph": [getWebsiteSchema(), getHairSalonSchema()],
+    "@graph": [getWebsiteSchema(), getHairSalonSchema(reviews)],
   };
 }

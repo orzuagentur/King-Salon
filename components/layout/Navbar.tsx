@@ -29,10 +29,12 @@ const linkVariants = {
 };
 
 type NavbarProps = {
+  phone?: string;
   siteName?: string;
 };
 
-export function Navbar({ siteName = "King Salon" }: NavbarProps) {
+export function Navbar({ phone = "+491738882560", siteName = "King Salon" }: NavbarProps) {
+  const phoneHref = `tel:${phone}`;
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export function Navbar({ siteName = "King Salon" }: NavbarProps) {
           <div className="flex items-center gap-2 sm:gap-3">
             <a
               className="touch-press hidden min-h-11 items-center rounded-full border border-border bg-white/5 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-foreground transition hover:border-gold hover:text-gold sm:inline-flex"
-              href="tel:+491738882560"
+              href={phoneHref}
             >
               Anrufen
             </a>
@@ -169,7 +171,7 @@ export function Navbar({ siteName = "King Salon" }: NavbarProps) {
                 </LuxuryButton>
                 <LuxuryButton
                   className="w-full"
-                  href="tel:+491738882560"
+                  href={phoneHref}
                   onClick={closeMenu}
                   variant="secondary"
                 >

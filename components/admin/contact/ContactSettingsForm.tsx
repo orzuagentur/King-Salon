@@ -25,7 +25,8 @@ export function ContactSettingsForm({ settings }: ContactSettingsFormProps) {
         Kontaktdaten bearbeiten
       </h2>
       <p className="mt-2 text-sm text-muted">
-        Diese Angaben erscheinen im Kontaktbereich, in der Karte und bei Anruf-Links auf der Website.
+        Diese Angaben erscheinen im Kontaktbereich, in der Karte, in der Navigation (Anrufen) und
+        bei der schwebenden Anruf-Schaltfläche auf dem Handy.
       </p>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -39,6 +40,10 @@ export function ContactSettingsForm({ settings }: ContactSettingsFormProps) {
             required
             type="tel"
           />
+          <span className="mt-2 block text-xs text-muted">
+            Format mit Ländervorwahl, z. B. +49 173 8882560 — wird für Anruf-Links automatisch
+            umgewandelt.
+          </span>
         </label>
 
         <label className={labelClassName}>

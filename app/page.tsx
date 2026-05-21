@@ -32,7 +32,7 @@ export default async function Home() {
 
   return (
     <>
-      <Navbar siteName={homepage.site_name} />
+      <Navbar phone={contact.phone} siteName={homepage.site_name} />
       <LuxuryHero />
       <ServicesSection />
       <PricingSection />

@@ -20,9 +20,8 @@ export const adminPageConfig: Record<string, AdminPageConfig> = {
     title: "Galerie",
   },
   "/admin/bewertungen": {
-    description: "Bearbeiten Sie Kundenbewertungen und steuern Sie die Sichtbarkeit.",
-    placeholderMessage:
-      "Die Bewertungsverwaltung mit Freigabe-Logik folgt in der nächsten Admin-Phase.",
+    description: "Kundenbewertungen hinzufügen, bearbeiten und Sichtbarkeit steuern.",
+    placeholderMessage: "Bewertungen werden direkt in diesem Bereich verwaltet.",
     placeholderTitle: "Bewertungen",
     title: "Bewertungen",
   },
