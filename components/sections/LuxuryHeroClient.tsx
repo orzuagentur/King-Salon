@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 import { LuxuryButton } from "@/components/ui/LuxuryButton";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
+import { resolveHomepageImageUrl } from "@/lib/homepage/images";
 import type { HomepageContent } from "@/lib/homepage/types";
 import { containerClassName } from "@/lib/layout/classes";
 import { imageDefaults, imageSizePresets } from "@/lib/images/config";
@@ -21,6 +22,9 @@ export function LuxuryHeroClient({
   phone,
   phoneDisplay,
 }: LuxuryHeroClientProps) {
+  const heroBackgroundSrc = resolveHomepageImageUrl(content.hero_background_image);
+  const heroImageSrc = resolveHomepageImageUrl(content.hero_image);
+
   const heroStats = [
     { label: "Standort", value: "Celle Zentrum" },
     { label: "Stil", value: "Luxury Grooming" },
@@ -37,7 +41,7 @@ export function LuxuryHeroClient({
           placeholder="empty"
           quality={imageDefaults.qualityDecorative}
           sizes={imageSizePresets.heroBackground}
-          src="/images/salon-interior.png"
+          src={heroBackgroundSrc}
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,164,93,0.22),transparent_34%),linear-gradient(180deg,rgba(5,5,5,0.35)_0%,#050505_88%)]" />
       </div>
@@ -74,13 +78,13 @@ export function LuxuryHeroClient({
             transition={{ delay: 0.28, duration: 1, ease: [0.22, 1, 0.36, 1] }}
           >
             <OptimizedImage
-              alt="Präziser Haarschnitt im King Salon Celle"
+              alt={content.hero_image_alt}
               className="object-cover"
               fill
               priority
               quality={imageDefaults.qualityHero}
               sizes={imageSizePresets.hero}
-              src="/images/barber-haarschnitt.png"
+              src={heroImageSrc}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" />
             <div className="absolute inset-x-4 bottom-4 rounded-[1.5rem] border border-gold/20 bg-black/40 p-4 backdrop-blur sm:inset-x-8 sm:bottom-8 sm:rounded-[2rem] sm:p-5">

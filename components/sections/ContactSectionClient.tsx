@@ -18,12 +18,14 @@ type ContactSectionClientProps = {
   contact: SalonContact;
   masters: MasterOption[];
   openingHours: OpeningHoursEntry[];
+  siteName: string;
 };
 
 export function ContactSectionClient({
   contact,
   masters,
   openingHours,
+  siteName,
 }: ContactSectionClientProps) {
   const contactLinks = [
     {
@@ -143,10 +145,10 @@ export function ContactSectionClient({
 
         <footer className="mt-16 border-t border-border pt-8 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-foreground">
-            King Salon Celle
+            {siteName}
           </p>
           <p className="mt-3 text-xs text-muted">
-            © {new Date().getFullYear()} King Salon. Alle Rechte vorbehalten.
+            © {new Date().getFullYear()} {siteName}. Alle Rechte vorbehalten.
           </p>
         </footer>
       </div>

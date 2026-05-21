@@ -28,7 +28,11 @@ const linkVariants = {
   }),
 };
 
-export function Navbar() {
+type NavbarProps = {
+  siteName?: string;
+};
+
+export function Navbar({ siteName = "King Salon" }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -65,7 +69,7 @@ export function Navbar() {
             href="/"
             onClick={closeMenu}
           >
-            King Salon
+            {siteName}
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">

@@ -49,17 +49,29 @@ on conflict (id) do update set
 
 insert into public.homepage_content (
   id,
+  site_name,
+  hero_background_image,
+  hero_image,
+  hero_image_alt,
   hero_eyebrow,
   hero_title,
   hero_subtitle
 )
 values (
   'main',
+  'King Salon',
+  '/images/salon-interior.png',
+  '/images/barber-haarschnitt.png',
+  'Präziser Haarschnitt im King Salon Celle',
   'Luxus-Barbershop & Hairstylist in Celle',
   'Präzision. Stil. Königliche Ausstrahlung.',
   'Premium-Haarschnitte, Fades, Bartpflege und VIP-Grooming für Männer, die einen starken Auftritt erwarten.'
 )
 on conflict (id) do update set
+  site_name = excluded.site_name,
+  hero_background_image = excluded.hero_background_image,
+  hero_image = excluded.hero_image,
+  hero_image_alt = excluded.hero_image_alt,
   hero_eyebrow = excluded.hero_eyebrow,
   hero_title = excluded.hero_title,
   hero_subtitle = excluded.hero_subtitle,

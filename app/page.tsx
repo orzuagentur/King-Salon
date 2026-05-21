@@ -9,6 +9,7 @@ import { PricingSection } from "@/components/sections/PricingSection";
 import { ReviewsSection } from "@/components/sections/ReviewsSection";
 import { ServicesSection } from "@/components/sections/ServicesSection";
 import { LocalBusinessInfo } from "@/components/seo/LocalBusinessInfo";
+import { getHomepageContent } from "@/lib/data/homepage";
 import { getSeoSettings } from "@/lib/data/seo";
 import { getSalonContact } from "@/lib/data/settings";
 import { createLocalPageMetadata } from "@/lib/seo/metadata";
@@ -27,11 +28,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const contact = await getSalonContact();
+  const [contact, homepage] = await Promise.all([getSalonContact(), getHomepageContent()]);
 
   return (
     <>
-      <Navbar />
+      <Navbar siteName={homepage.site_name} />
       <LuxuryHero />
       <ServicesSection />
       <PricingSection />

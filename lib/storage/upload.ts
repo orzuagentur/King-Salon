@@ -91,3 +91,7 @@ export async function uploadGalleryImage(file: File, folder = "uploads") {
 export async function uploadServiceImage(file: File, folder = "uploads") {
   return uploadImage("services", file, folder);
 }
+
+export async function uploadHomepageImage(file: File, folder = "homepage") {
+  return uploadImage("gallery", file, folder);
+}

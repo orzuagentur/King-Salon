@@ -96,6 +96,10 @@ create index admins_role_idx on public.admins (role);
 -- Homepage CMS content (singleton row: id = 'main')
 create table public.homepage_content (
   id text primary key default 'main',
+  site_name text not null default 'King Salon',
+  hero_background_image text not null default '/images/salon-interior.png',
+  hero_image text not null default '/images/barber-haarschnitt.png',
+  hero_image_alt text not null default 'Präziser Haarschnitt im King Salon Celle',
   hero_eyebrow text not null,
   hero_title text not null,
   hero_subtitle text not null,
