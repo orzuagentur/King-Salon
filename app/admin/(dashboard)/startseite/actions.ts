@@ -5,12 +5,52 @@ import { redirect } from "next/navigation";
 
 import { verifyAdminSession } from "@/lib/auth/verify-admin";
 import { defaultHomepageContent } from "@/lib/homepage/defaults";
+import type { HomepageContent } from "@/lib/homepage/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function getTextField(formData: FormData, key: string) {
   const value = formData.get(key);
 
   return typeof value === "string" ? value.trim() : "";
+}
+
+function buildHomepagePayload(formData: FormData): HomepageContent {
+  return {
+    site_name: getTextField(formData, "site_name"),
+    hero_eyebrow: getTextField(formData, "hero_eyebrow"),
+    hero_title: getTextField(formData, "hero_title"),
+    hero_subtitle: getTextField(formData, "hero_subtitle"),
+    hero_background_image:
+      getTextField(formData, "hero_background_image") ||
+      defaultHomepageContent.hero_background_image,
+    hero_image: getTextField(formData, "hero_image") || defaultHomepageContent.hero_image,
+    hero_image_alt:
+      getTextField(formData, "hero_image_alt") || defaultHomepageContent.hero_image_alt,
+    hero_card_street:
+      getTextField(formData, "hero_card_street") || defaultHomepageContent.hero_card_street,
+    hero_card_city:
+      getTextField(formData, "hero_card_city") || defaultHomepageContent.hero_card_city,
+    hero_card_hours:
+      getTextField(formData, "hero_card_hours") || defaultHomepageContent.hero_card_hours,
+    hero_stat_location:
+      getTextField(formData, "hero_stat_location") || defaultHomepageContent.hero_stat_location,
+    hero_stat_style:
+      getTextField(formData, "hero_stat_style") || defaultHomepageContent.hero_stat_style,
+  };
+}
+
+function isHomepagePayloadValid(payload: HomepageContent) {
+  return Boolean(
+    payload.site_name &&
+      payload.hero_eyebrow &&
+      payload.hero_title &&
+      payload.hero_subtitle &&
+      payload.hero_card_street &&
+      payload.hero_card_city &&
+      payload.hero_card_hours &&
+      payload.hero_stat_location &&
+      payload.hero_stat_style,
+  );
 }
 
 async function assertAdmin() {
@@ -26,19 +66,9 @@ async function assertAdmin() {
 export async function updateHomepageContent(formData: FormData) {
   await assertAdmin();
 
-  const siteName = getTextField(formData, "site_name");
-  const heroEyebrow = getTextField(formData, "hero_eyebrow");
-  const heroTitle = getTextField(formData, "hero_title");
-  const heroSubtitle = getTextField(formData, "hero_subtitle");
-  const heroBackgroundImage =
-    getTextField(formData, "hero_background_image") ||
-    defaultHomepageContent.hero_background_image;
-  const heroImage =
-    getTextField(formData, "hero_image") || defaultHomepageContent.hero_image;
-  const heroImageAlt =
-    getTextField(formData, "hero_image_alt") || defaultHomepageContent.hero_image_alt;
+  const payload = buildHomepagePayload(formData);
 
-  if (!siteName || !heroEyebrow || !heroTitle || !heroSubtitle) {
+  if (!isHomepagePayloadValid(payload)) {
     redirect("/admin/startseite?fehler=Bitte%20alle%20Pflichtfelder%20ausfüllen");
   }
 
@@ -49,19 +79,23 @@ export async function updateHomepageContent(formData: FormData) {
     .eq("id", "main")
     .maybeSingle();
 
+  const row = {
+    site_name: payload.site_name,
+    hero_eyebrow: payload.hero_eyebrow,
+    hero_title: payload.hero_title,
+    hero_subtitle: payload.hero_subtitle,
+    hero_background_image: payload.hero_background_image,
+    hero_image: payload.hero_image,
+    hero_image_alt: payload.hero_image_alt,
+    hero_card_street: payload.hero_card_street,
+    hero_card_city: payload.hero_card_city,
+    hero_card_hours: payload.hero_card_hours,
+    hero_stat_location: payload.hero_stat_location,
+    hero_stat_style: payload.hero_stat_style,
+  };
+
   if (existing) {
-    const { error } = await supabase
-      .from("homepage_content")
-      .update({
-        site_name: siteName,
-        hero_eyebrow: heroEyebrow,
-        hero_title: heroTitle,
-        hero_subtitle: heroSubtitle,
-        hero_background_image: heroBackgroundImage,
-        hero_image: heroImage,
-        hero_image_alt: heroImageAlt,
-      })
-      .eq("id", "main");
+    const { error } = await supabase.from("homepage_content").update(row).eq("id", "main");
 
     if (error) {
       redirect("/admin/startseite?fehler=Startseite%20konnte%20nicht%20gespeichert%20werden");
@@ -69,13 +103,7 @@ export async function updateHomepageContent(formData: FormData) {
   } else {
     const { error } = await supabase.from("homepage_content").insert({
       id: "main",
-      site_name: siteName,
-      hero_eyebrow: heroEyebrow,
-      hero_title: heroTitle,
-      hero_subtitle: heroSubtitle,
-      hero_background_image: heroBackgroundImage,
-      hero_image: heroImage,
-      hero_image_alt: heroImageAlt,
+      ...row,
     });
 
     if (error) {

@@ -25,7 +25,7 @@ export default async function AdminHomepagePage({ searchParams }: AdminHomepageP
   return (
     <div className="space-y-8">
       <AdminHeader
-        description="Name, Hero-Bilder und Texte der Startseite anpassen."
+        description="Name, Hero-Bilder, Standort, Stil und Texte der Startseite anpassen."
         email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Startseite"

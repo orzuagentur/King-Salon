@@ -26,8 +26,8 @@ export function LuxuryHeroClient({
   const heroImageSrc = resolveHomepageImageUrl(content.hero_image);
 
   const heroStats = [
-    { label: "Standort", value: "Celle Zentrum" },
-    { label: "Stil", value: "Luxury Grooming" },
+    { label: "Standort", value: content.hero_stat_location },
+    { label: "Stil", value: content.hero_stat_style },
     { label: "Kontakt", value: phoneDisplay },
   ];
 
@@ -89,13 +89,13 @@ export function LuxuryHeroClient({
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" />
             <div className="absolute inset-x-4 bottom-4 rounded-[1.5rem] border border-gold/20 bg-black/40 p-4 backdrop-blur sm:inset-x-8 sm:bottom-8 sm:rounded-[2rem] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-gold sm:text-xs sm:tracking-[0.32em]">
-                Hehlentorstraße 8
+                {content.hero_card_street}
               </p>
               <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-foreground sm:mt-3 sm:text-2xl">
-                29221 Celle
+                {content.hero_card_city}
               </p>
               <p className="mt-2 text-xs leading-6 text-muted sm:mt-3 sm:text-sm">
-                Montag bis Freitag 09:00 - 19:00, Samstag 09:00 - 16:00
+                {content.hero_card_hours}
               </p>
             </div>
           </motion.div>

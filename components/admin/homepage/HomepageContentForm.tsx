@@ -24,7 +24,7 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
         Startseite bearbeiten
       </h2>
       <p className="mt-2 text-sm text-muted">
-        Name, Hero-Texte und die beiden oberen Bilder der Startseite anpassen.
+        Name, Bilder, Standort-Karte, Info-Blöcke und Hero-Texte der Startseite anpassen.
       </p>
 
       <div className="mt-6 space-y-8">
@@ -78,6 +78,85 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
               defaultValue={content.hero_image_alt}
               name="hero_image_alt"
               placeholder="Präziser Haarschnitt im King Salon Celle"
+              type="text"
+            />
+          </label>
+        </section>
+
+        <section className="space-y-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
+            Standort-Karte (auf dem Hero-Bild)
+          </h3>
+          <p className="text-sm text-muted">
+            Texte im kleinen Kasten unten auf dem großen Bild rechts — Straße, Ort und Öffnungszeiten.
+          </p>
+
+          <label className={labelClassName}>
+            Straße *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.hero_card_street}
+              name="hero_card_street"
+              placeholder="Hehlentorstraße 8"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Ort / PLZ *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.hero_card_city}
+              name="hero_card_city"
+              placeholder="29221 Celle"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Öffnungszeiten (kurz) *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.hero_card_hours}
+              name="hero_card_hours"
+              placeholder="Montag bis Freitag 09:00 - 19:00, Samstag 09:00 - 16:00"
+              required
+              type="text"
+            />
+          </label>
+        </section>
+
+        <section className="space-y-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
+            Info-Blöcke unten (Standort & Stil)
+          </h3>
+          <p className="text-sm text-muted">
+            Die drei Kästchen unter dem Hero — „Standort“ und „Stil“ sind hier editierbar. „Kontakt“
+            zeigt automatisch die Telefonnummer aus Kontakt.
+          </p>
+
+          <label className={labelClassName}>
+            Standort *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.hero_stat_location}
+              name="hero_stat_location"
+              placeholder="Celle Zentrum"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Stil *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.hero_stat_style}
+              name="hero_stat_style"
+              placeholder="Luxury Grooming"
+              required
               type="text"
             />
           </label>

@@ -146,9 +146,14 @@ export type Database = {
       homepage_content: {
         Row: {
           hero_background_image: string;
+          hero_card_city: string;
+          hero_card_hours: string;
+          hero_card_street: string;
           hero_eyebrow: string;
           hero_image: string;
           hero_image_alt: string;
+          hero_stat_location: string;
+          hero_stat_style: string;
           hero_subtitle: string;
           hero_title: string;
           id: string;
@@ -157,9 +162,14 @@ export type Database = {
         };
         Insert: {
           hero_background_image?: string;
+          hero_card_city?: string;
+          hero_card_hours?: string;
+          hero_card_street?: string;
           hero_eyebrow: string;
           hero_image?: string;
           hero_image_alt?: string;
+          hero_stat_location?: string;
+          hero_stat_style?: string;
           hero_subtitle: string;
           hero_title: string;
           id?: string;
@@ -168,9 +178,14 @@ export type Database = {
         };
         Update: {
           hero_background_image?: string;
+          hero_card_city?: string;
+          hero_card_hours?: string;
+          hero_card_street?: string;
           hero_eyebrow?: string;
           hero_image?: string;
           hero_image_alt?: string;
+          hero_stat_location?: string;
+          hero_stat_style?: string;
           hero_subtitle?: string;
           hero_title?: string;
           id?: string;
