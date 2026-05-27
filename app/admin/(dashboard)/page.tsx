@@ -8,8 +8,8 @@ import { adminNavItems } from "@/lib/admin/navigation";
 import { getAdminDashboardStats } from "@/lib/admin/stats";
 
 export const metadata: Metadata = {
-  title: "Dashboard | King Salon Admin",
-  description: "Admin-Dashboard für King Salon Celle.",
+  title: "Dashboard",
+  description: "Admin-Dashboard.",
 };
 
 export default async function AdminDashboardPage() {

@@ -5,14 +5,18 @@ import { usePathname } from "next/navigation";
 
 import { adminNavItems } from "@/lib/admin/navigation";
 
-export function AdminSidebar() {
+type AdminSidebarProps = {
+  brandName: string;
+};
+
+export function AdminSidebar({ brandName }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
     <aside className="flex flex-col gap-6">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-gold">
-          King Salon
+          {brandName}
         </p>
         <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-foreground">
           Admin CMS

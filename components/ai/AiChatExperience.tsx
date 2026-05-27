@@ -1,41 +1,26 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, type CSSProperties } from "react";
 
 import { AiAgentAvatar } from "@/components/ai/AiAgentAvatar";
+import { AiBookingStepPanel } from "@/components/ai/AiBookingStepPanel";
 import { AiChatComposer } from "@/components/ai/AiChatComposer";
 import { AiChatMessages } from "@/components/ai/AiChatMessages";
 import { useAiChat } from "@/lib/ai/chat/use-ai-chat";
+import { isBookingIntent, useAiBookingFlow } from "@/lib/ai/chat/use-ai-booking-flow";
 import { useVisualViewportOffset } from "@/lib/ai/chat/use-visual-viewport";
 import type { AiAgentConfig } from "@/lib/ai/agent/types";
-import type { MasterOption } from "@/lib/booking/types";
-
-const AiBookingInline = dynamic(
-  () => import("@/components/ai/AiBookingInline").then((module) => module.AiBookingInline),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="mx-auto h-24 w-full max-w-3xl animate-pulse rounded-2xl border border-border bg-surface-elevated" />
-    ),
-  },
-);
+import type { AiBookingModePayload } from "@/lib/ai/booking/types";
 
 type AiChatExperienceProps = {
   agent: AiAgentConfig;
-  masters: MasterOption[];
-  whatsappUrl: string;
 };
 
-export function AiChatExperience({ agent, masters, whatsappUrl }: AiChatExperienceProps) {
-  const [showBooking, setShowBooking] = useState(false);
+export function AiChatExperience({ agent }: AiChatExperienceProps) {
   useVisualViewportOffset();
 
-  const openBooking = useCallback(() => {
-    setShowBooking(true);
-  }, []);
+  const bookingModeRef = useRef<AiBookingModePayload | undefined>(undefined);
 
   const {
     messages,
@@ -48,7 +33,19 @@ export function AiChatExperience({ agent, masters, whatsappUrl }: AiChatExperien
     sendMessage,
     retryMessage,
     appendAssistantMessage,
-  } = useAiChat({ agent, onOpenBooking: openBooking });
+  } = useAiChat({
+    agent,
+    getBookingMode: () => bookingModeRef.current,
+  });
+
+  const bookingFlow = useAiBookingFlow({
+    onBooked: (message) => appendAssistantMessage(message),
+    onStepMessage: (message) => appendAssistantMessage(message),
+  });
+
+  bookingModeRef.current = bookingFlow.active
+    ? { active: true, step: bookingFlow.step, draft: bookingFlow.draft }
+    : undefined;
 
   useEffect(() => {
     document.body.dataset.aiChatPage = "true";
@@ -60,18 +57,36 @@ export function AiChatExperience({ agent, masters, whatsappUrl }: AiChatExperien
     };
   }, []);
 
+  const handleSend = useCallback(
+    async (value: string) => {
+      const content = value.trim();
+      if (!content) {
+        return;
+      }
+
+      if (isBookingIntent(content) && !bookingFlow.active) {
+        bookingFlow.start();
+        await sendMessage(content, { skipAi: true });
+        return;
+      }
+
+      const bookingHandled = await bookingFlow.processUserInput(content);
+
+      if (bookingHandled) {
+        await sendMessage(content, { skipAi: true });
+        return;
+      }
+
+      await sendMessage(content);
+    },
+    [bookingFlow, sendMessage],
+  );
+
   function handleInputChange(value: string) {
     setInput(value);
     if (error) {
       setError(null);
     }
-  }
-
-  function handleBookingSuccess() {
-    appendAssistantMessage(
-      "Ihre Terminanfrage wurde gesendet. Wir melden uns in Kürze zur Bestätigung — vielen Dank!",
-    );
-    setShowBooking(false);
   }
 
   const themeStyle = {
@@ -91,9 +106,9 @@ export function AiChatExperience({ agent, masters, whatsappUrl }: AiChatExperien
               <p className="mt-0.5 flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-muted">
                 <span
                   aria-hidden="true"
-                  className={`h-1.5 w-1.5 rounded-full ${isTyping ? "animate-pulse bg-[var(--ai-accent)]" : "bg-emerald-400"}`}
+                  className={`h-1.5 w-1.5 rounded-full ${isTyping || bookingFlow.isProcessing ? "animate-pulse bg-[var(--ai-accent)]" : "bg-emerald-400"}`}
                 />
-                {isTyping ? "Schreibt…" : "Online"}
+                {isTyping || bookingFlow.isProcessing ? "Schreibt…" : "Online"}
               </p>
             </div>
           </div>
@@ -117,42 +132,42 @@ export function AiChatExperience({ agent, masters, whatsappUrl }: AiChatExperien
           </div>
         ) : (
           <AiChatMessages
-            isTyping={false}
+            isTyping={isTyping}
             messages={messages}
-            onBook={openBooking}
+            onBook={() => bookingFlow.start()}
             onRetry={(messageId) => {
               void retryMessage(messageId);
             }}
           />
         )}
 
-        <AnimatePresence initial={false}>
-          {showBooking ? (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className="shrink-0 px-4 pb-2 sm:px-6"
-              exit={{ opacity: 0, y: 8 }}
-              initial={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.25 }}
-            >
-              <AiBookingInline
-                masters={masters}
-                onClose={() => setShowBooking(false)}
-                onSuccess={handleBookingSuccess}
-                whatsappUrl={whatsappUrl}
-              />
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+        {bookingFlow.active ? (
+          <AiBookingStepPanel
+            availability={bookingFlow.availability}
+            fieldError={bookingFlow.fieldError}
+            selectedTime={bookingFlow.draft.appointment_time}
+            onCancel={bookingFlow.reset}
+            onSelectDate={(dateIso) => {
+              void bookingFlow.selectDate(dateIso);
+            }}
+            onSelectMaster={(masterId) => {
+              void bookingFlow.selectMaster(masterId);
+            }}
+            onSelectTime={(time) => {
+              void bookingFlow.selectTime(time);
+            }}
+            step={bookingFlow.step}
+          />
+        ) : null}
 
         <AiChatComposer
-          disabled={isTyping || !hydrated}
+          disabled={isTyping || bookingFlow.isProcessing || !hydrated}
           error={error}
-          isLoading={isTyping}
+          isLoading={isTyping || bookingFlow.isProcessing}
           onChange={handleInputChange}
           onDismissError={() => setError(null)}
           onSend={(value) => {
-            void sendMessage(value);
+            void handleSend(value);
           }}
           value={input}
         />

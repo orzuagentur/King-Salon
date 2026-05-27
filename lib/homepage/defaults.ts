@@ -5,7 +5,7 @@ export const defaultHomepageContent: HomepageContent = {
   hero_subtitle:
     "Premium-Haarschnitte, Fades, Bartpflege und VIP-Grooming für Männer, die einen starken Auftritt erwarten.",
   hero_title: "Präzision. Stil. Königliche Ausstrahlung.",
-  site_name: "King Salon",
+  site_name: "Premium Salon",
   hero_background_image: "/images/salon-interior.png",
   hero_background_media_type: "image",
   hero_image: "/images/barber-haarschnitt.png",
@@ -21,4 +21,12 @@ export const defaultHomepageContent: HomepageContent = {
   contact_section_title: "Ihr Termin beginnt hier.",
   contact_section_subtitle:
     "Besuchen Sie uns vor Ort — für Premium-Grooming, Beratung und einen starken Auftritt.",
+  admin_brand_name: "",
+  admin_login_subtitle:
+    "Melden Sie sich an, um Inhalte, Preise, Galerie und Salon-Daten sicher zu verwalten.",
+  local_location_eyebrow: "Standort",
+  local_area_eyebrow: "Einzugsgebiet",
+  local_area_description:
+    "Wir betreuen Kunden aus der Region — zentral erreichbar und mit persönlicher Beratung.",
+  local_area_tags: "Celle, Region, Niedersachsen",
 };

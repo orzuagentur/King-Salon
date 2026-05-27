@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getAllBookings } from "@/lib/data/bookings";
 
 export const metadata: Metadata = {
-  title: "Termine | King Salon Admin",
+  title: "Termine",
 };
 
 export default async function AdminBookingsPage() {

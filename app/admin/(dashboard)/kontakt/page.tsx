@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getSettings } from "@/lib/data/settings";
 
 export const metadata: Metadata = {
-  title: "Kontakt | King Salon Admin",
+  title: "Kontakt",
 };
 
 export default async function AdminContactPage() {

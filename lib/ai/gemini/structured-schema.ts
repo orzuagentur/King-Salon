@@ -60,4 +60,5 @@ Erlaubte block.type Werte:
 - "cta" mit label und action ("book" | "contact")
 
 Nutze blocks für Preise, Öffnungszeiten, Services, Kontakt und Buchungs-Hinweise.
+Bei aktiver Terminbuchung: genau eine klare Frage pro Antwort, nur verfügbare Zeiten/Meister aus dem Kontext.
 `.trim();

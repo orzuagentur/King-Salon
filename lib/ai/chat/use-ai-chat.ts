@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { AiAgentConfig } from "@/lib/ai/agent/types";
+import type { AiBookingModePayload } from "@/lib/ai/booking/types";
 import { sendChatToApi } from "@/lib/ai/chat-client";
 import { clearChatSession, loadChatSession, saveChatSession } from "@/lib/ai/chat/session";
 import { createMessageId } from "@/lib/ai/format";
@@ -18,16 +19,12 @@ function createWelcomeMessage(config: AiAgentConfig): AiChatMessage {
   };
 }
 
-function isBookingIntent(text: string) {
-  return /(termin|buchen|buchung|reservier|appointment|uhrzeit.*frei)/i.test(text);
-}
-
 type UseAiChatOptions = {
   agent: AiAgentConfig;
-  onOpenBooking?: () => void;
+  getBookingMode?: () => AiBookingModePayload | undefined;
 };
 
-export function useAiChat({ agent, onOpenBooking }: UseAiChatOptions) {
+export function useAiChat({ agent, getBookingMode }: UseAiChatOptions) {
   const welcomeMessage = useMemo(() => createWelcomeMessage(agent), [agent]);
 
   const [messages, setMessages] = useState<AiChatMessage[]>([welcomeMessage]);
@@ -66,14 +63,10 @@ export function useAiChat({ agent, onOpenBooking }: UseAiChatOptions) {
   }, []);
 
   const sendMessage = useCallback(
-    async (rawValue: string) => {
+    async (rawValue: string, options?: { skipAi?: boolean }) => {
       const content = rawValue.trim();
       if (!content || isTyping) {
         return;
-      }
-
-      if (isBookingIntent(content)) {
-        onOpenBooking?.();
       }
 
       const userMessage: AiChatMessage = {
@@ -84,6 +77,15 @@ export function useAiChat({ agent, onOpenBooking }: UseAiChatOptions) {
         status: "sent",
       };
 
+      const nextMessages = [...messages, userMessage];
+      setError(null);
+      setMessages(nextMessages);
+      setInput("");
+
+      if (options?.skipAi) {
+        return;
+      }
+
       const assistantId = createMessageId();
       const assistantShell: AiChatMessage = {
         id: assistantId,
@@ -93,14 +95,12 @@ export function useAiChat({ agent, onOpenBooking }: UseAiChatOptions) {
         status: "streaming",
       };
 
-      const nextMessages = [...messages, userMessage];
-      setError(null);
-      setMessages([...nextMessages, assistantShell]);
-      setInput("");
+      setMessages((current) => [...current, assistantShell]);
       setIsTyping(true);
 
       try {
-        const { structured } = await sendChatToApi({ messages: nextMessages });
+        const bookingMode = getBookingMode?.();
+        const { structured } = await sendChatToApi({ messages: nextMessages, bookingMode });
 
         setMessages((current) =>
           current.map((message) =>
@@ -137,7 +137,7 @@ export function useAiChat({ agent, onOpenBooking }: UseAiChatOptions) {
         setIsTyping(false);
       }
     },
-    [isTyping, messages, onOpenBooking],
+    [getBookingMode, isTyping, messages],
   );
 
   const retryMessage = useCallback(
@@ -160,17 +160,12 @@ export function useAiChat({ agent, onOpenBooking }: UseAiChatOptions) {
     setInput("");
   }, [welcomeMessage]);
 
-  const lastMessage = messages.at(-1);
-  const showTypingIndicator =
-    isTyping && lastMessage?.role === "assistant" && lastMessage.status === "streaming";
-
   return {
     messages,
     input,
     isTyping,
     error,
     hydrated,
-    showTypingIndicator,
     setInput,
     setError,
     sendMessage,

@@ -46,8 +46,32 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
               type="text"
             />
             <span className="mt-2 block text-xs text-muted">
-              Erscheint oben in der Navigation und im Footer.
+              Erscheint in Navigation, Footer und im Standort-Block unten auf der Seite.
             </span>
+          </label>
+
+          <label className={labelClassName}>
+            Admin-Name (optional)
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.admin_brand_name}
+              name="admin_brand_name"
+              placeholder={content.site_name}
+              type="text"
+            />
+            <span className="mt-2 block text-xs text-muted">
+              Sidebar und Login. Leer = gleicher Name wie oben.
+            </span>
+          </label>
+
+          <label className={labelClassName}>
+            Login-Untertitel *
+            <textarea
+              className={`${inputClassName} min-h-20 resize-none`}
+              defaultValue={content.admin_login_subtitle}
+              name="admin_login_subtitle"
+              required
+            />
           </label>
         </section>
 
@@ -198,6 +222,62 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
               defaultValue={content.contact_section_subtitle}
               name="contact_section_subtitle"
               required
+            />
+          </label>
+        </section>
+
+        <section className="space-y-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
+            Standort-Block (unter dem Footer)
+          </h3>
+          <p className="text-sm text-muted">
+            Der Bereich mit Adresse, Telefon und Einzugsgebiet. Adresse und Telefon kommen aus Admin
+            → Kontakt.
+          </p>
+
+          <label className={labelClassName}>
+            Standort-Überschrift *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.local_location_eyebrow}
+              name="local_location_eyebrow"
+              placeholder="Standort"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Einzugsgebiet-Überschrift *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.local_area_eyebrow}
+              name="local_area_eyebrow"
+              placeholder="Einzugsgebiet"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Einzugsgebiet-Text *
+            <textarea
+              className={`${inputClassName} min-h-24 resize-none`}
+              defaultValue={content.local_area_description}
+              name="local_area_description"
+              required
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Regionen (Tags, kommagetrennt) *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.local_area_tags}
+              name="local_area_tags"
+              placeholder="Celle, Garßen, Region"
+              required
+              type="text"
             />
           </label>
         </section>

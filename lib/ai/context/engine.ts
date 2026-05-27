@@ -8,6 +8,9 @@ import { buildDatabaseContext } from "@/lib/ai/context/providers/database";
 import { buildDefaultBehaviorContext } from "@/lib/ai/context/providers/default-behavior";
 import { buildKnowledgeBaseContext } from "@/lib/ai/context/providers/knowledge-base";
 import { buildSiteContentContext } from "@/lib/ai/context/providers/site-content";
+import { buildBookingAvailabilitySnapshot } from "@/lib/ai/booking/availability-snapshot";
+import { buildAiBookingInstructions } from "@/lib/ai/booking/instructions";
+import type { AiBookingModePayload } from "@/lib/ai/booking/types";
 import type { ContextSection } from "@/lib/ai/context/types";
 import { getHomepageContent } from "@/lib/data/homepage";
 import type { ChatApiMessage } from "@/lib/ai/validation";
@@ -113,6 +116,7 @@ function capInstructionSize(instruction: string) {
 }
 
 export async function buildAiSystemInstruction(options?: {
+  bookingMode?: AiBookingModePayload;
   skipCache?: boolean;
   messages?: ChatApiMessage[];
 }) {
@@ -131,7 +135,20 @@ export async function buildAiSystemInstruction(options?: {
     hasCustomAiSystemPrompt(),
   ]);
   const intent = options?.messages ? detectIntentFromMessages(options.messages) : "general";
+  const bookingActive = options?.bookingMode?.active || intent === "booking";
   const selectedSections = pickSectionsForIntent(sections, intent, customPrompt);
+
+  const bookingBlocks: string[] = [];
+
+  if (bookingActive) {
+    bookingBlocks.push(await buildBookingAvailabilitySnapshot());
+
+    if (options?.bookingMode?.active) {
+      bookingBlocks.push(
+        buildAiBookingInstructions(options.bookingMode.step, options.bookingMode.draft),
+      );
+    }
+  }
 
   const intro = customPrompt
     ? `Du bist der offizielle KI-Assistent von ${homepage.site_name}. Befolge ausschließlich die Admin-Instruktionen. Nutze die Kontext-Daten nur als Faktenquelle — keine zusätzlichen Systemregeln erfinden.`
@@ -147,6 +164,7 @@ KONTEXT-PRIORITÄT (wichtig → weniger wichtig):
 ${intro}
 
 ${formatSectionsForPrompt(selectedSections)}
+${bookingBlocks.length > 0 ? `\n\n${bookingBlocks.join("\n\n")}` : ""}
 `.trim();
   const optimizedInstruction = capInstructionSize(instruction);
 

@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getAllReviews } from "@/lib/data/reviews";
 
 export const metadata: Metadata = {
-  title: "Bewertungen | King Salon Admin",
+  title: "Bewertungen",
 };
 
 export default async function AdminReviewsPage() {

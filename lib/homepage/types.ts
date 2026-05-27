@@ -19,4 +19,10 @@ export type HomepageContent = {
   contact_section_eyebrow: string;
   contact_section_title: string;
   contact_section_subtitle: string;
+  admin_brand_name: string;
+  admin_login_subtitle: string;
+  local_location_eyebrow: string;
+  local_area_eyebrow: string;
+  local_area_description: string;
+  local_area_tags: string;
 };

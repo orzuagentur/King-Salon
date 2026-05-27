@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getAllMasters } from "@/lib/data/masters";
 
 export const metadata: Metadata = {
-  title: "Meister | King Salon Admin",
+  title: "Meister",
 };
 
 export default async function AdminMastersPage() {

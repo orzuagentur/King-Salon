@@ -56,6 +56,20 @@ function buildHomepagePayload(formData: FormData): HomepageContent {
     contact_section_subtitle:
       getTextField(formData, "contact_section_subtitle") ||
       defaultHomepageContent.contact_section_subtitle,
+    admin_brand_name: getTextField(formData, "admin_brand_name"),
+    admin_login_subtitle:
+      getTextField(formData, "admin_login_subtitle") ||
+      defaultHomepageContent.admin_login_subtitle,
+    local_location_eyebrow:
+      getTextField(formData, "local_location_eyebrow") ||
+      defaultHomepageContent.local_location_eyebrow,
+    local_area_eyebrow:
+      getTextField(formData, "local_area_eyebrow") || defaultHomepageContent.local_area_eyebrow,
+    local_area_description:
+      getTextField(formData, "local_area_description") ||
+      defaultHomepageContent.local_area_description,
+    local_area_tags:
+      getTextField(formData, "local_area_tags") || defaultHomepageContent.local_area_tags,
   };
 }
 
@@ -73,7 +87,12 @@ function isHomepagePayloadValid(payload: HomepageContent) {
       payload.footer_rights &&
       payload.contact_section_eyebrow &&
       payload.contact_section_title &&
-      payload.contact_section_subtitle,
+      payload.contact_section_subtitle &&
+      payload.local_location_eyebrow &&
+      payload.local_area_eyebrow &&
+      payload.local_area_description &&
+      payload.local_area_tags &&
+      payload.admin_login_subtitle,
   );
 }
 
@@ -122,6 +141,12 @@ export async function updateHomepageContent(formData: FormData) {
     contact_section_eyebrow: payload.contact_section_eyebrow,
     contact_section_title: payload.contact_section_title,
     contact_section_subtitle: payload.contact_section_subtitle,
+    admin_brand_name: payload.admin_brand_name || null,
+    admin_login_subtitle: payload.admin_login_subtitle,
+    local_location_eyebrow: payload.local_location_eyebrow,
+    local_area_eyebrow: payload.local_area_eyebrow,
+    local_area_description: payload.local_area_description,
+    local_area_tags: payload.local_area_tags,
   };
 
   if (existing) {
@@ -142,6 +167,8 @@ export async function updateHomepageContent(formData: FormData) {
   }
 
   revalidatePath("/");
+  revalidatePath("/admin");
   revalidatePath("/admin/startseite");
+  revalidatePath("/admin/anmelden");
   redirect("/admin/startseite?erfolg=Startseiten-Inhalte%20erfolgreich%20gespeichert");
 }

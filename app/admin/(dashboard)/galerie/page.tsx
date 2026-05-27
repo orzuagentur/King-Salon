@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getAllGalleryItems } from "@/lib/data/gallery";
 
 export const metadata: Metadata = {
-  title: "Galerie | King Salon Admin",
+  title: "Galerie",
 };
 
 export default async function AdminGalleryPage() {

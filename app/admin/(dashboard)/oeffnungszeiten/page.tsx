@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getOpeningHours } from "@/lib/data/opening-hours";
 
 export const metadata: Metadata = {
-  title: "Öffnungszeiten | King Salon Admin",
+  title: "Öffnungszeiten",
 };
 
 export default async function AdminHoursPage() {

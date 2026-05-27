@@ -9,7 +9,8 @@ import { getActiveServices } from "@/lib/data/services";
 import { getSettings } from "@/lib/data/settings";
 import { getSeoSettings } from "@/lib/data/seo";
 import { formatPriceLabel } from "@/lib/format/price";
-import { getFormattedLocalAddress, localBusiness } from "@/lib/seo/local";
+import { parseAreaTags } from "@/lib/homepage/branding";
+import { getLocalSectionContent } from "@/lib/site/local-section";
 import { siteConfig } from "@/lib/seo/site";
 
 function formatPages(pages: SiteContentPage[]) {
@@ -17,15 +18,17 @@ function formatPages(pages: SiteContentPage[]) {
 }
 
 export async function extractSiteContentPages(): Promise<SiteContentPage[]> {
-  const [homepage, seo, settings, services, gallery, reviews, knowledge] = await Promise.all([
-    getHomepageContent(),
-    getSeoSettings(),
-    getSettings(),
-    getActiveServices(),
-    getAllGalleryItems(),
-    getActiveReviews(),
-    getActiveAiKnowledge(),
-  ]);
+  const [homepage, seo, settings, services, gallery, reviews, knowledge, local] =
+    await Promise.all([
+      getHomepageContent(),
+      getSeoSettings(),
+      getSettings(),
+      getActiveServices(),
+      getAllGalleryItems(),
+      getActiveReviews(),
+      getActiveAiKnowledge(),
+      getLocalSectionContent(),
+    ]);
 
   const pages: SiteContentPage[] = [
     {
@@ -42,13 +45,13 @@ export async function extractSiteContentPages(): Promise<SiteContentPage[]> {
     },
     {
       id: "about",
-      section: "Über uns",
-      title: siteSectionCopy.about.eyebrow,
+      section: "Standort",
+      title: local.locationEyebrow,
       body: [
-        localBusiness.name,
-        getFormattedLocalAddress(),
-        siteSectionCopy.about.description,
-        `Einzugsgebiet: ${localBusiness.areaServed.join(", ")}`,
+        local.siteName,
+        local.formattedAddress,
+        local.areaDescription,
+        `Einzugsgebiet: ${local.areaTags.join(", ")}`,
       ].join("\n"),
     },
     {

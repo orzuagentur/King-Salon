@@ -1,3 +1,4 @@
+import type { AiBookingModePayload } from "@/lib/ai/booking/types";
 import type { AiStructuredResponse } from "@/lib/ai/structured/types";
 import type { AiChatMessage } from "@/lib/ai/types";
 
@@ -6,6 +7,7 @@ export type AiChatApiResult = {
 };
 
 type SendChatOptions = {
+  bookingMode?: AiBookingModePayload;
   messages: AiChatMessage[];
 };
 
@@ -27,7 +29,10 @@ async function parseErrorResponse(response: Response) {
   }
 }
 
-export async function sendChatToApi({ messages }: SendChatOptions): Promise<AiChatApiResult> {
+export async function sendChatToApi({
+  bookingMode,
+  messages,
+}: SendChatOptions): Promise<AiChatApiResult> {
   const apiMessages = toApiMessages(messages);
 
   if (apiMessages.length === 0) {
@@ -40,6 +45,7 @@ export async function sendChatToApi({ messages }: SendChatOptions): Promise<AiCh
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      bookingMode,
       messages: apiMessages,
       stream: true,
     }),

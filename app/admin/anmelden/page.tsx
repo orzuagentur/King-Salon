@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 
 import { signIn } from "@/app/admin/anmelden/actions";
-
-export const metadata: Metadata = {
-  title: "Admin Anmeldung | King Salon Celle",
-  description: "Geschuetzter Admin-Zugang fuer King Salon Celle.",
-};
+import { getHomepageContent } from "@/lib/data/homepage";
+import { getAdminBrandName } from "@/lib/homepage/branding";
 
 type LoginPageProps = {
   searchParams: Promise<{
@@ -13,21 +10,30 @@ type LoginPageProps = {
   }>;
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const homepage = await getHomepageContent();
+  const brandName = getAdminBrandName(homepage);
+
+  return {
+    title: `Admin Anmeldung | ${brandName}`,
+    description: `Geschützter Admin-Zugang für ${brandName}.`,
+  };
+}
+
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const { fehler } = await searchParams;
+  const [{ fehler }, homepage] = await Promise.all([searchParams, getHomepageContent()]);
+  const brandName = getAdminBrandName(homepage);
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-background px-5 py-12 text-foreground">
       <section className="w-full max-w-md rounded-[2rem] border border-border bg-surface/90 p-6 shadow-luxury backdrop-blur sm:p-8">
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-gold">
-          King Salon Celle
+          {brandName}
         </p>
         <h1 className="text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-4xl">
           Admin Anmeldung
         </h1>
-        <p className="mt-3 text-sm leading-6 text-muted">
-          Melden Sie sich an, um Inhalte, Preise, Galerie und Salon-Daten sicher zu verwalten.
-        </p>
+        <p className="mt-3 text-sm leading-6 text-muted">{homepage.admin_login_subtitle}</p>
 
         {fehler ? (
           <p className="mt-6 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm text-gold-soft">
@@ -42,7 +48,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               autoComplete="email"
               className="mt-2 h-12 w-full rounded-full border border-border bg-background px-5 text-foreground outline-none transition focus:border-gold"
               name="email"
-              placeholder="admin@kingsalon.de"
+              placeholder="admin@beispiel.de"
               required
               type="email"
             />

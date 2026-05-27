@@ -1,4 +1,5 @@
 import { AI_CHAT_LIMITS } from "@/lib/ai/config";
+import type { AiBookingModePayload } from "@/lib/ai/booking/types";
 import type { AiChatRole } from "@/lib/ai/types";
 
 export type ChatApiMessage = {
@@ -17,7 +18,7 @@ function countUrls(text: string) {
 }
 
 export function parseChatRequestBody(body: unknown):
-  | { ok: true; messages: ChatApiMessage[]; stream: boolean }
+  | { ok: true; bookingMode?: AiBookingModePayload; messages: ChatApiMessage[]; stream: boolean }
   | { ok: false; error: string } {
   if (!body || typeof body !== "object") {
     return { ok: false, error: "Ungültige Anfrage." };
@@ -74,5 +75,19 @@ export function parseChatRequestBody(body: unknown):
     return { ok: false, error: "Die letzte Nachricht muss vom Nutzer sein." };
   }
 
-  return { ok: true, messages: trimmedHistory, stream };
+  let bookingMode: AiBookingModePayload | undefined;
+
+  if (record.bookingMode && typeof record.bookingMode === "object") {
+    const mode = record.bookingMode as Record<string, unknown>;
+
+    if (mode.active === true && typeof mode.step === "string") {
+      bookingMode = {
+        active: true,
+        step: mode.step as AiBookingModePayload["step"],
+        draft: (mode.draft as AiBookingModePayload["draft"]) ?? {},
+      };
+    }
+  }
+
+  return { ok: true, messages: trimmedHistory, stream, bookingMode };
 }

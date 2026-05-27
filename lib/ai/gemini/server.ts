@@ -5,6 +5,7 @@ import { buildAiSystemInstruction } from "@/lib/ai/context/engine";
 import { aiResponseSchema, structuredResponseInstruction } from "@/lib/ai/gemini/structured-schema";
 import { parseStructuredResponse } from "@/lib/ai/structured/parse";
 import type { AiStructuredResponse } from "@/lib/ai/structured/types";
+import type { AiBookingModePayload } from "@/lib/ai/booking/types";
 import type { ChatApiMessage } from "@/lib/ai/validation";
 
 function getGeminiClient() {
@@ -57,9 +58,9 @@ function trimMessagesForModel(messages: ChatApiMessage[]) {
   return result;
 }
 
-async function createModel(messages: ChatApiMessage[]) {
+async function createModel(messages: ChatApiMessage[], bookingMode?: AiBookingModePayload) {
   const optimizedMessages = trimMessagesForModel(messages);
-  const systemInstruction = `${await buildAiSystemInstruction({ messages: optimizedMessages })}\n\n${structuredResponseInstruction}`;
+  const systemInstruction = `${await buildAiSystemInstruction({ messages: optimizedMessages, bookingMode })}\n\n${structuredResponseInstruction}`;
   const client = getGeminiClient();
 
   return {
@@ -77,8 +78,9 @@ async function createModel(messages: ChatApiMessage[]) {
 
 export async function generateGeminiStructuredReply(
   messages: ChatApiMessage[],
+  bookingMode?: AiBookingModePayload,
 ): Promise<AiStructuredResponse> {
-  const { model, optimizedMessages } = await createModel(messages);
+  const { model, optimizedMessages } = await createModel(messages, bookingMode);
   const lastMessage = optimizedMessages.at(-1);
 
   if (!lastMessage || lastMessage.role !== "user") {
@@ -99,8 +101,11 @@ export async function generateGeminiStructuredReply(
   return parseStructuredResponse(text);
 }
 
-export async function streamGeminiStructuredReply(messages: ChatApiMessage[]) {
-  const { model, optimizedMessages } = await createModel(messages);
+export async function streamGeminiStructuredReply(
+  messages: ChatApiMessage[],
+  bookingMode?: AiBookingModePayload,
+) {
+  const { model, optimizedMessages } = await createModel(messages, bookingMode);
   const lastMessage = optimizedMessages.at(-1);
 
   if (!lastMessage || lastMessage.role !== "user") {

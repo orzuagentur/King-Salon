@@ -90,9 +90,10 @@ ${faqBlock}
 BUCHUNGS-AUSLASTUNG (SICHER GEFILTERT):
 ${bookingLoadBlock}
 
-TERMINE & BUCHUNG:
-- Online-Terminanfrage über „Termin anfragen“ auf der Website
-- Keine verbindliche Bestätigung im Chat — Formular, Telefon oder WhatsApp empfehlen
+TERMINE & BUCHUNG (CHAT):
+- Terminbuchung läuft im Chat Schritt für Schritt (Datum → Uhrzeit → Meister → Kontakt → Bestätigung)
+- Nur freie Slots aus „LIVE-TERMINVERFÜGBARKEIT“ nennen — belegte Zeiten nie als frei darstellen
+- Keine verbindliche Bestätigung im Chat — nach dem Senden melden wir uns zur Bestätigung
 `.trim();
 
   return {

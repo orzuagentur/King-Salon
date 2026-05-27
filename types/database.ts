@@ -292,13 +292,21 @@ export type Database = {
           id: string;
           site_name: string;
           updated_at: string;
+          admin_brand_name: string | null;
+          admin_login_subtitle: string | null;
           contact_section_eyebrow: string | null;
           contact_section_subtitle: string | null;
           contact_section_title: string | null;
           footer_rights: string | null;
           footer_tagline: string | null;
+          local_area_description: string | null;
+          local_area_eyebrow: string | null;
+          local_area_tags: string | null;
+          local_location_eyebrow: string | null;
         };
         Insert: {
+          admin_brand_name?: string | null;
+          admin_login_subtitle?: string | null;
           hero_background_image?: string;
           hero_background_media_type?: string;
           contact_section_eyebrow?: string | null;
@@ -306,6 +314,10 @@ export type Database = {
           contact_section_title?: string | null;
           footer_rights?: string | null;
           footer_tagline?: string | null;
+          local_area_description?: string | null;
+          local_area_eyebrow?: string | null;
+          local_area_tags?: string | null;
+          local_location_eyebrow?: string | null;
           hero_card_city?: string;
           hero_card_hours?: string;
           hero_card_street?: string;
@@ -321,6 +333,8 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          admin_brand_name?: string | null;
+          admin_login_subtitle?: string | null;
           hero_background_image?: string;
           hero_background_media_type?: string;
           contact_section_eyebrow?: string | null;
@@ -328,6 +342,10 @@ export type Database = {
           contact_section_title?: string | null;
           footer_rights?: string | null;
           footer_tagline?: string | null;
+          local_area_description?: string | null;
+          local_area_eyebrow?: string | null;
+          local_area_tags?: string | null;
+          local_location_eyebrow?: string | null;
           hero_card_city?: string;
           hero_card_hours?: string;
           hero_card_street?: string;

@@ -65,8 +65,10 @@ export async function POST(request: Request) {
     }
 
     const structured = parsed.stream
-      ? await parseStreamedStructuredReply((await streamGeminiStructuredReply(parsed.messages)).stream)
-      : await generateGeminiStructuredReply(parsed.messages);
+      ? await parseStreamedStructuredReply(
+          (await streamGeminiStructuredReply(parsed.messages, parsed.bookingMode)).stream,
+        )
+      : await generateGeminiStructuredReply(parsed.messages, parsed.bookingMode);
 
     return secureJson({ structured });
   } catch (error) {

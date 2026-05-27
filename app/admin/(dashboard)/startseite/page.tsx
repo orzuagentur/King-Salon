@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getHomepageContent } from "@/lib/data/homepage";
 
 export const metadata: Metadata = {
-  title: "Startseite | King Salon Admin",
+  title: "Startseite",
 };
 
 export default async function AdminHomepagePage() {
