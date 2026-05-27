@@ -12,7 +12,7 @@ import {
 } from "@/lib/ai/booking/parse-input";
 import type { AiBookingDraft, AiBookingStep, AiBookingValidateResult } from "@/lib/ai/booking/types";
 import type { DateAvailability } from "@/lib/booking/types";
-import { formatBookingSummary } from "@/lib/ai/booking/validate-draft";
+import { formatBookingSummary } from "@/lib/ai/booking/format-summary";
 
 type UseAiBookingFlowOptions = {
   onBooked?: (message: string) => void;

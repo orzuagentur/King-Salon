@@ -1,6 +1,7 @@
-import { getDateAvailability, getAvailableMastersForSlot } from "@/lib/booking/availability";
-import { formatGermanDate } from "@/lib/booking/slots";
+import "server-only";
+
 import type { AiBookingDraft, AiBookingStep, AiBookingValidateResult } from "@/lib/ai/booking/types";
+import { getAvailableMastersForSlot, getDateAvailability } from "@/lib/booking/availability";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -185,17 +186,4 @@ export async function validateBookingDraftStep(
   }
 
   return { ok: true, nextStep: "done" };
-}
-
-export function formatBookingSummary(draft: AiBookingDraft, masterName: string) {
-  const dateLabel = draft.appointment_date ? formatGermanDate(draft.appointment_date) : "—";
-
-  return [
-    `Datum: ${dateLabel}`,
-    `Uhrzeit: ${draft.appointment_time ?? "—"}`,
-    `Meister: ${masterName}`,
-    `Name: ${draft.customer_name ?? "—"}`,
-    `Telefon: ${draft.customer_phone ?? "—"}`,
-    `E-Mail: ${draft.customer_email ?? "—"}`,
-  ].join("\n");
 }
