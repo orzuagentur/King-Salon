@@ -11,9 +11,9 @@ export const adminNavItems: AdminNavItem[] = [
     label: "Dashboard",
   },
   {
-    description: "Leistungen und Preise verwalten",
+    description: "Preise und Services für die Startseite verwalten",
     href: "/admin/leistungen",
-    label: "Leistungen",
+    label: "Preise",
   },
   {
     description: "Terminanfragen bestätigen und verwalten",

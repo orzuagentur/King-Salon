@@ -16,7 +16,6 @@ export default async function AdminAiAssistantPage() {
     <div className="space-y-8">
       <AdminHeader
         description="System-Prompt, Wissensdatenbank, Speicher und Website-Kontext für den KI-Chat steuern."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="KI-Assistent"
       />

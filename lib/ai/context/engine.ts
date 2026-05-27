@@ -2,12 +2,14 @@ import {
   getCachedSystemInstruction,
   setCachedSystemInstruction,
 } from "@/lib/ai/context/cache";
+import { hasCustomAiSystemPrompt } from "@/lib/ai/context/has-custom-prompt";
 import { AI_CHAT_LIMITS } from "@/lib/ai/config";
 import { buildDatabaseContext } from "@/lib/ai/context/providers/database";
 import { buildDefaultBehaviorContext } from "@/lib/ai/context/providers/default-behavior";
 import { buildKnowledgeBaseContext } from "@/lib/ai/context/providers/knowledge-base";
 import { buildSiteContentContext } from "@/lib/ai/context/providers/site-content";
 import type { ContextSection } from "@/lib/ai/context/types";
+import { getHomepageContent } from "@/lib/data/homepage";
 import type { ChatApiMessage } from "@/lib/ai/validation";
 
 type ContextIntent = "booking" | "contact" | "services" | "reviews" | "general";
@@ -64,9 +66,19 @@ function detectIntentFromMessages(messages: ChatApiMessage[]): ContextIntent {
   return "general";
 }
 
-function pickSectionsForIntent(sections: ContextSection[], intent: ContextIntent) {
+function getBehaviorSectionTitle(customPrompt: boolean) {
+  return customPrompt ? "Admin-Instruktionen" : "Standard-Verhalten";
+}
+
+function pickSectionsForIntent(
+  sections: ContextSection[],
+  intent: ContextIntent,
+  customPrompt: boolean,
+) {
+  const behaviorTitle = getBehaviorSectionTitle(customPrompt);
   const alwaysKeep = sections.filter(
-    (section) => section.title === "Standard-Verhalten" || section.title === "Wissensdatenbank (Admin)",
+    (section) =>
+      section.title === behaviorTitle || section.title === "Wissensdatenbank (Admin)",
   );
 
   const databaseSection = sections.find((section) => section.title === "Live-Datenbank");
@@ -85,7 +97,6 @@ function pickSectionsForIntent(sections: ContextSection[], intent: ContextIntent
     picked.push(databaseSection);
   }
 
-  // Keep site content only when useful to avoid token overhead.
   if (siteSection && intent === "services") {
     picked.push(siteSection);
   }
@@ -114,17 +125,26 @@ export async function buildAiSystemInstruction(options?: {
     }
   }
 
-  const sections = await buildContextSections();
+  const [sections, homepage, customPrompt] = await Promise.all([
+    buildContextSections(),
+    getHomepageContent(),
+    hasCustomAiSystemPrompt(),
+  ]);
   const intent = options?.messages ? detectIntentFromMessages(options.messages) : "general";
-  const selectedSections = pickSectionsForIntent(sections, intent);
-  const instruction = `
-Du unterstützt Kunden von King Salon Celle als offizieller Website-Assistent.
+  const selectedSections = pickSectionsForIntent(sections, intent, customPrompt);
+
+  const intro = customPrompt
+    ? `Du bist der offizielle KI-Assistent von ${homepage.site_name}. Befolge ausschließlich die Admin-Instruktionen. Nutze die Kontext-Daten nur als Faktenquelle — keine zusätzlichen Systemregeln erfinden.`
+    : `Du unterstützt Kunden von ${homepage.site_name} als offizieller Website-Assistent.
 
 KONTEXT-PRIORITÄT (wichtig → weniger wichtig):
-1. Wissensdatenbank aus der Admin-Panel
-2. Live-Daten aus der Datenbank (Leistungen, Preise, Team, Kontakt)
+1. Wissensdatenbank aus dem Admin-Panel
+2. Live-Daten aus der Datenbank (Preise, Team, Kontakt)
 3. Inhalte der Website
-4. Standard-Verhalten und Admin-Prompt-Einstellungen
+4. Standard-Verhalten aus dem Admin-Panel`;
+
+  const instruction = `
+${intro}
 
 ${formatSectionsForPrompt(selectedSections)}
 `.trim();

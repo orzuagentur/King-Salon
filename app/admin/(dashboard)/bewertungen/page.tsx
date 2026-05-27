@@ -17,7 +17,6 @@ export default async function AdminReviewsPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Kundenbewertungen hinzufügen, bearbeiten und auf der Website ein- oder ausblenden."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Bewertungen"
       />

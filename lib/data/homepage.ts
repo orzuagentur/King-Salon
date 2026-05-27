@@ -8,7 +8,7 @@ export async function getHomepageContent(): Promise<HomepageContent> {
   const { data, error } = await supabase
     .from("homepage_content")
     .select(
-      "hero_eyebrow, hero_title, hero_subtitle, site_name, hero_background_image, hero_background_media_type, hero_image, hero_image_alt, hero_card_street, hero_card_city, hero_card_hours, hero_stat_location, hero_stat_style",
+      "hero_eyebrow, hero_title, hero_subtitle, site_name, hero_background_image, hero_background_media_type, hero_image, hero_image_alt, hero_card_street, hero_card_city, hero_card_hours, hero_stat_location, hero_stat_style, footer_tagline, footer_rights, contact_section_eyebrow, contact_section_title, contact_section_subtitle",
     )
     .eq("id", "main")
     .maybeSingle();
@@ -35,5 +35,13 @@ export async function getHomepageContent(): Promise<HomepageContent> {
     hero_card_hours: data.hero_card_hours ?? defaultHomepageContent.hero_card_hours,
     hero_stat_location: data.hero_stat_location ?? defaultHomepageContent.hero_stat_location,
     hero_stat_style: data.hero_stat_style ?? defaultHomepageContent.hero_stat_style,
+    footer_tagline: data.footer_tagline ?? defaultHomepageContent.footer_tagline,
+    footer_rights: data.footer_rights ?? defaultHomepageContent.footer_rights,
+    contact_section_eyebrow:
+      data.contact_section_eyebrow ?? defaultHomepageContent.contact_section_eyebrow,
+    contact_section_title:
+      data.contact_section_title ?? defaultHomepageContent.contact_section_title,
+    contact_section_subtitle:
+      data.contact_section_subtitle ?? defaultHomepageContent.contact_section_subtitle,
   };
 }

@@ -15,4 +15,10 @@ export const defaultHomepageContent: HomepageContent = {
   hero_card_hours: "Montag bis Freitag 09:00 - 19:00, Samstag 09:00 - 16:00",
   hero_stat_location: "Celle Zentrum",
   hero_stat_style: "Luxury Grooming",
+  footer_tagline: "",
+  footer_rights: "Alle Rechte vorbehalten.",
+  contact_section_eyebrow: "Kontakt",
+  contact_section_title: "Ihr Termin beginnt hier.",
+  contact_section_subtitle:
+    "Besuchen Sie uns vor Ort — für Premium-Grooming, Beratung und einen starken Auftritt.",
 };

@@ -15,7 +15,6 @@ export async function AdminSectionTemplate({ pathname }: AdminSectionTemplatePro
     <div className="space-y-8">
       <AdminHeader
         description={config.description}
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title={config.title}
       />

@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 type FloatingContactActionsProps = {
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
   phone: string;
   whatsappUrl: string;
 };
@@ -59,8 +61,21 @@ function ContactIcon() {
   );
 }
 
-export function FloatingContactActions({ phone, whatsappUrl }: FloatingContactActionsProps) {
-  const [open, setOpen] = useState(false);
+export function FloatingContactActions({
+  onOpenChange,
+  open: controlledOpen,
+  phone,
+  whatsappUrl,
+}: FloatingContactActionsProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = controlledOpen ?? uncontrolledOpen;
+
+  function setOpen(next: boolean) {
+    if (controlledOpen === undefined) {
+      setUncontrolledOpen(next);
+    }
+    onOpenChange?.(next);
+  }
 
   return (
     <div className="mobile-contact-dock fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-50 flex flex-col items-end gap-3 md:hidden">
@@ -89,7 +104,7 @@ export function FloatingContactActions({ phone, whatsappUrl }: FloatingContactAc
         aria-expanded={open}
         aria-label={open ? "Kontaktoptionen schließen" : "Kontaktoptionen öffnen"}
         className="touch-press flex h-14 w-14 items-center justify-center rounded-full border border-gold bg-gold text-black shadow-luxury transition active:scale-95"
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => setOpen(!open)}
         type="button"
       >
         <ContactIcon />

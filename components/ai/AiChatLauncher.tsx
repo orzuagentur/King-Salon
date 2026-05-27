@@ -5,11 +5,19 @@ import { motion } from "framer-motion";
 
 import { AiSparkIcon } from "@/components/ai/AiSparkIcon";
 
-export function AiChatLauncher() {
+type AiChatLauncherProps = {
+  contactDockOpen?: boolean;
+};
+
+export function AiChatLauncher({ contactDockOpen = false }: AiChatLauncherProps) {
   return (
     <motion.div
       animate={{ opacity: 1, scale: 1 }}
-      className="ai-chat-launcher fixed z-[60] bottom-[max(5.75rem,calc(env(safe-area-inset-bottom)+4.75rem))] right-[max(1rem,env(safe-area-inset-right))] md:bottom-[max(1rem,env(safe-area-inset-bottom))]"
+      className={`ai-chat-launcher fixed z-[60] right-[max(1rem,env(safe-area-inset-right))] transition-[bottom] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:bottom-[max(1rem,env(safe-area-inset-bottom))] ${
+        contactDockOpen
+          ? "bottom-[max(9.5rem,calc(env(safe-area-inset-bottom)+8.5rem))]"
+          : "bottom-[max(5.75rem,calc(env(safe-area-inset-bottom)+4.75rem))]"
+      }`}
       initial={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >

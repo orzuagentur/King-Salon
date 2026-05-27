@@ -8,10 +8,9 @@ type AdminPageConfig = {
 export const adminPageConfig: Record<string, AdminPageConfig> = {
   "/admin/leistungen": {
     description: "Verwalten Sie alle Services, Beschreibungen, Preise und Dauer.",
-    placeholderMessage:
-      "Leistungen und Preise werden direkt in diesem Bereich verwaltet.",
-    placeholderTitle: "Leistungen & Preise",
-    title: "Leistungen",
+    placeholderMessage: "Preise werden direkt in diesem Bereich verwaltet.",
+    placeholderTitle: "Preise",
+    title: "Preise",
   },
   "/admin/galerie": {
     description: "Laden Sie Bilder hoch, ordnen Sie Kategorien und verwalten Sie die Galerie.",

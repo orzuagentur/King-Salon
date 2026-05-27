@@ -163,6 +163,76 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
 
         <section className="space-y-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
+            Kontakt-Bereich
+          </h3>
+          <p className="text-sm text-muted">
+            Überschriften im Kontakt-Abschnitt. Adresse, Karte und Telefon unter Admin → Kontakt.
+          </p>
+
+          <label className={labelClassName}>
+            Eyebrow *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.contact_section_eyebrow}
+              name="contact_section_eyebrow"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Titel *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.contact_section_title}
+              name="contact_section_title"
+              required
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Untertitel *
+            <textarea
+              className={`${inputClassName} min-h-24 resize-none`}
+              defaultValue={content.contact_section_subtitle}
+              name="contact_section_subtitle"
+              required
+            />
+          </label>
+        </section>
+
+        <section className="space-y-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
+            Footer
+          </h3>
+
+          <label className={labelClassName}>
+            Zusatzzeile (optional)
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.footer_tagline}
+              name="footer_tagline"
+              placeholder="z.B. Premium Barbershop in Ihrer Stadt"
+              type="text"
+            />
+          </label>
+
+          <label className={labelClassName}>
+            Copyright-Text *
+            <input
+              className={`${inputClassName} h-11`}
+              defaultValue={content.footer_rights}
+              name="footer_rights"
+              placeholder="Alle Rechte vorbehalten."
+              required
+              type="text"
+            />
+          </label>
+        </section>
+
+        <section className="space-y-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
             Hero-Texte
           </h3>
 

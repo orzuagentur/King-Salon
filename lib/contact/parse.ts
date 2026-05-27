@@ -42,6 +42,6 @@ export function getInstagramDisplay(instagramUrl: string) {
   return "Instagram";
 }
 
-export function getFacebookDisplay() {
-  return "King Salon Celle";
+export function getFacebookDisplay(siteName: string) {
+  return siteName;
 }

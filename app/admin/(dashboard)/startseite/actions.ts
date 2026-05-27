@@ -44,6 +44,18 @@ function buildHomepagePayload(formData: FormData): HomepageContent {
       getTextField(formData, "hero_stat_location") || defaultHomepageContent.hero_stat_location,
     hero_stat_style:
       getTextField(formData, "hero_stat_style") || defaultHomepageContent.hero_stat_style,
+    footer_tagline: getTextField(formData, "footer_tagline"),
+    footer_rights:
+      getTextField(formData, "footer_rights") || defaultHomepageContent.footer_rights,
+    contact_section_eyebrow:
+      getTextField(formData, "contact_section_eyebrow") ||
+      defaultHomepageContent.contact_section_eyebrow,
+    contact_section_title:
+      getTextField(formData, "contact_section_title") ||
+      defaultHomepageContent.contact_section_title,
+    contact_section_subtitle:
+      getTextField(formData, "contact_section_subtitle") ||
+      defaultHomepageContent.contact_section_subtitle,
   };
 }
 
@@ -57,7 +69,11 @@ function isHomepagePayloadValid(payload: HomepageContent) {
       payload.hero_card_city &&
       payload.hero_card_hours &&
       payload.hero_stat_location &&
-      payload.hero_stat_style,
+      payload.hero_stat_style &&
+      payload.footer_rights &&
+      payload.contact_section_eyebrow &&
+      payload.contact_section_title &&
+      payload.contact_section_subtitle,
   );
 }
 
@@ -101,6 +117,11 @@ export async function updateHomepageContent(formData: FormData) {
     hero_card_hours: payload.hero_card_hours,
     hero_stat_location: payload.hero_stat_location,
     hero_stat_style: payload.hero_stat_style,
+    footer_tagline: payload.footer_tagline || null,
+    footer_rights: payload.footer_rights,
+    contact_section_eyebrow: payload.contact_section_eyebrow,
+    contact_section_title: payload.contact_section_title,
+    contact_section_subtitle: payload.contact_section_subtitle,
   };
 
   if (existing) {

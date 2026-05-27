@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 
-import { AiChatLauncher } from "@/components/ai/AiChatLauncher";
-import { FloatingContactActions } from "@/components/layout/FloatingContactActions";
+import { MobileActionDock } from "@/components/layout/MobileActionDock";
 import { Navbar } from "@/components/layout/Navbar";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { GallerySection } from "@/components/sections/GallerySection";
 import { LuxuryHero } from "@/components/sections/LuxuryHero";
 import { PricingSection } from "@/components/sections/PricingSection";
 import { ReviewsSection } from "@/components/sections/ReviewsSection";
-import { ServicesSection } from "@/components/sections/ServicesSection";
 import { LocalBusinessInfo } from "@/components/seo/LocalBusinessInfo";
 import { getHomepageContent } from "@/lib/data/homepage";
 import { getSeoSettings } from "@/lib/data/seo";
@@ -35,14 +33,12 @@ export default async function Home() {
     <>
       <Navbar phone={contact.phone} siteName={homepage.site_name} />
       <LuxuryHero />
-      <ServicesSection />
       <PricingSection />
       <GallerySection />
       <ReviewsSection />
       <ContactSection />
       <LocalBusinessInfo />
-      <AiChatLauncher />
-      <FloatingContactActions phone={contact.phone} whatsappUrl={contact.whatsapp} />
+      <MobileActionDock phone={contact.phone} whatsappUrl={contact.whatsapp} />
     </>
   );
 }

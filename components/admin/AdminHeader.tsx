@@ -2,12 +2,11 @@ import { signOut } from "@/app/admin/anmelden/actions";
 
 type AdminHeaderProps = {
   description: string;
-  email: string;
   role: string;
   title: string;
 };
 
-export function AdminHeader({ description, email, role, title }: AdminHeaderProps) {
+export function AdminHeader({ description, role, title }: AdminHeaderProps) {
   return (
     <header className="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -16,7 +15,6 @@ export function AdminHeader({ description, email, role, title }: AdminHeaderProp
           {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{description}</p>
-        <p className="mt-2 text-xs text-muted">{email}</p>
       </div>
 
       <form action={signOut}>

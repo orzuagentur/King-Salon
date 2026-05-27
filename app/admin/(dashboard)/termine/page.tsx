@@ -17,7 +17,6 @@ export default async function AdminBookingsPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Alle Terminanfragen von der Website – Status ändern oder löschen."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Termine"
       />

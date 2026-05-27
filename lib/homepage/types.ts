@@ -14,4 +14,9 @@ export type HomepageContent = {
   hero_card_hours: string;
   hero_stat_location: string;
   hero_stat_style: string;
+  footer_tagline: string;
+  footer_rights: string;
+  contact_section_eyebrow: string;
+  contact_section_title: string;
+  contact_section_subtitle: string;
 };

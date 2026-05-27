@@ -52,12 +52,6 @@ export async function extractSiteContentPages(): Promise<SiteContentPage[]> {
       ].join("\n"),
     },
     {
-      id: "services-intro",
-      section: "Leistungen",
-      title: siteSectionCopy.services.title,
-      body: `${siteSectionCopy.services.eyebrow}\n${siteSectionCopy.services.subtitle}`,
-    },
-    {
       id: "pricing-intro",
       section: "Preise",
       title: siteSectionCopy.pricing.title,
@@ -66,8 +60,8 @@ export async function extractSiteContentPages(): Promise<SiteContentPage[]> {
     {
       id: "contact-intro",
       section: "Kontakt",
-      title: siteSectionCopy.contact.title,
-      body: `${siteSectionCopy.contact.eyebrow}\n${siteSectionCopy.contact.subtitle}`,
+      title: homepage.contact_section_title,
+      body: `${homepage.contact_section_eyebrow}\n${homepage.contact_section_subtitle}`,
     },
     {
       id: "seo",

@@ -17,7 +17,6 @@ export default async function AdminHoursPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Öffnungszeiten für alle Wochentage verwalten."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Öffnungszeiten"
       />

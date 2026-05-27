@@ -50,10 +50,11 @@ export async function AiPromptSection({ overview }: AiPromptSectionProps) {
 
       <details className="mt-6 rounded-2xl border border-border bg-background p-4">
         <summary className="cursor-pointer select-none text-sm font-semibold text-foreground">
-          Vorschau: finale System‑Instruktion
+          Vorschau: an Gemini gesendete Instruktion
         </summary>
         <div className="mt-4 text-xs text-muted">
-          Diese Vorschau zeigt, was an Gemini als System‑Instruktion gesendet wird (ohne Cache).
+          Zeigt die tatsächliche System-Instruktion. Bei gesetztem System-Prompt gelten nur Ihre
+          Admin-Regeln — nicht die eingebauten Standard-Texte.
         </div>
         <pre className="mt-4 max-h-[420px] overflow-auto whitespace-pre-wrap rounded-2xl border border-border bg-surface p-4 text-xs leading-6 text-foreground">
           {(await getContextPreview()).instruction}

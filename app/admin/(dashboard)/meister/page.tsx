@@ -17,7 +17,6 @@ export default async function AdminMastersPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Barber und Meister für die Online-Terminbuchung verwalten."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Meister"
       />

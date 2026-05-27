@@ -17,7 +17,6 @@ export default async function AdminContactPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Telefon, E-Mail, Adresse und Social-Media-Links pflegen."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Kontakt"
       />

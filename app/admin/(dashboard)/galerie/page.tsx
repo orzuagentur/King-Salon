@@ -17,7 +17,6 @@ export default async function AdminGalleryPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Laden Sie Bilder hoch, ordnen Sie Kategorien und verwalten Sie die Galerie."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Galerie"
       />

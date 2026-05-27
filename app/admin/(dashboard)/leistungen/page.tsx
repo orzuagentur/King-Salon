@@ -7,7 +7,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getAllServices } from "@/lib/data/services";
 
 export const metadata: Metadata = {
-  title: "Leistungen | King Salon Admin",
+  title: "Preise | Admin",
 };
 
 export default async function AdminServicesPage() {
@@ -18,9 +18,8 @@ export default async function AdminServicesPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Verwalten Sie alle Services, Beschreibungen, Preise und Dauer."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
-        title="Leistungen"
+        title="Preise"
       />
 
       <PricingQuickEdit services={services} />

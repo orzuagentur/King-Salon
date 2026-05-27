@@ -15,6 +15,15 @@ export async function ContactSection() {
   return (
     <ContactSectionClient
       contact={contact}
+      contactCopy={{
+        eyebrow: homepage.contact_section_eyebrow,
+        subtitle: homepage.contact_section_subtitle,
+        title: homepage.contact_section_title,
+      }}
+      footerCopy={{
+        rights: homepage.footer_rights,
+        tagline: homepage.footer_tagline,
+      }}
       masters={masters}
       openingHours={openingHours}
       siteName={homepage.site_name}

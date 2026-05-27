@@ -44,16 +44,17 @@ export function AiPromptEditorForm({ settings }: AiPromptEditorFormProps) {
         </label>
 
         <label className={labelClassName}>
-          System‑Prompt (optional)
+          System‑Prompt (ersetzt Standard-Regeln)
           <textarea
             className={`${inputClassName} min-h-56 resize-y`}
             defaultValue={settings?.system_prompt ?? ""}
             maxLength={8000}
             name="system_prompt"
-            placeholder="Hier können Sie die Persönlichkeit, Prioritäten und den Stil des Assistenten definieren…"
+            placeholder="Vollständige Anweisungen für den Assistenten. Wenn gesetzt, ersetzt dies die eingebauten Standard-Regeln vollständig."
           />
           <span className="mt-2 block text-xs text-muted">
-            Tipp: Keine Preise/Öffnungszeiten erfinden lassen – lieber auf Datenbank/Website verweisen.
+            Wenn ausgefüllt, gilt nur dieser Prompt (+ optional Ton/Verhalten) — keine halben System-Defaults.
+            Leer lassen für Standard-Verhalten.
           </span>
         </label>
 

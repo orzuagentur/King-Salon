@@ -22,7 +22,6 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Verwalten Sie Inhalte, Preise, Galerie, Bewertungen und Salon-Einstellungen zentral an einem Ort."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="Dashboard"
       />
@@ -35,7 +34,7 @@ export default async function AdminDashboardPage() {
         />
         <AdminStatCard
           hint="Aktive Leistungen im System"
-          label="Leistungen"
+          label="Preise"
           value={stats.activeServices}
         />
         <AdminStatCard hint="Bilder in der Galerie" label="Galerie" value={stats.galleryImages} />

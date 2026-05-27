@@ -16,7 +16,6 @@ export default async function AdminSeoPage() {
     <div className="space-y-8">
       <AdminHeader
         description="Meta-Titel, Beschreibung und lokale SEO-Einstellungen."
-        email={admin.email}
         role={admin.role === "admin" ? "Administrator" : "Editor"}
         title="SEO"
       />

@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { LuxuryButton } from "@/components/ui/LuxuryButton";
 
 const navigationItems = [
-  { href: "#leistungen", label: "Leistungen" },
   { href: "#preise", label: "Preise" },
   { href: "#galerie", label: "Galerie" },
   { href: "#bewertungen", label: "Bewertungen" },

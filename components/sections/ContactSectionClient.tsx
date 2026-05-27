@@ -16,6 +16,15 @@ import { containerClassName, sectionClassName } from "@/lib/layout/classes";
 
 type ContactSectionClientProps = {
   contact: SalonContact;
+  contactCopy: {
+    eyebrow: string;
+    subtitle: string;
+    title: string;
+  };
+  footerCopy: {
+    rights: string;
+    tagline: string;
+  };
   masters: MasterOption[];
   openingHours: OpeningHoursEntry[];
   siteName: string;
@@ -23,6 +32,8 @@ type ContactSectionClientProps = {
 
 export function ContactSectionClient({
   contact,
+  contactCopy,
+  footerCopy,
   masters,
   openingHours,
   siteName,
@@ -41,7 +52,7 @@ export function ContactSectionClient({
     {
       href: contact.facebook,
       label: "Facebook",
-      value: getFacebookDisplay(),
+      value: getFacebookDisplay(siteName),
     },
     {
       href: contact.googleMapsUrl,
@@ -54,9 +65,9 @@ export function ContactSectionClient({
     <section className={sectionClassName} id="kontakt">
       <div className={containerClassName}>
         <SectionHeading
-          eyebrow="Kontakt"
-          subtitle="Besuchen Sie King Salon Celle in der Hehlentorstraße – für Premium-Haarschnitte, Bartpflege und einen Look mit starker Ausstrahlung."
-          title="Ihr Termin in Celle."
+          eyebrow={contactCopy.eyebrow}
+          subtitle={contactCopy.subtitle}
+          title={contactCopy.title}
         />
 
         <motion.div
@@ -136,7 +147,7 @@ export function ContactSectionClient({
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 src={contact.googleMapsEmbedUrl}
-                title="King Salon Celle auf Google Maps"
+                title={`${siteName} auf Google Maps`}
               />
             </div>
             <ContactForm masters={masters} whatsappUrl={contact.whatsapp} />
@@ -147,8 +158,11 @@ export function ContactSectionClient({
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-foreground">
             {siteName}
           </p>
+          {footerCopy.tagline ? (
+            <p className="mt-3 text-sm leading-6 text-muted">{footerCopy.tagline}</p>
+          ) : null}
           <p className="mt-3 text-xs text-muted">
-            © {new Date().getFullYear()} {siteName}. Alle Rechte vorbehalten.
+            © {new Date().getFullYear()} {siteName}. {footerCopy.rights}
           </p>
         </footer>
       </div>
