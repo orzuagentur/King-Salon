@@ -238,3 +238,41 @@ values
     true,
     4
   );
+
+insert into public.ai_settings (id, tone, behavior_notes)
+values (
+  'main',
+  'Luxuriös, ruhig, professionell und herzlich — wie King Salon Celle.',
+  'Immer auf Deutsch antworten. Termine über das Formular auf der Website empfehlen.'
+)
+on conflict (id) do update set
+  tone = excluded.tone,
+  behavior_notes = excluded.behavior_notes,
+  updated_at = timezone('utc', now());
+
+insert into public.ai_knowledge (category, title, content, pinned, active, sort_order)
+values
+  (
+    'FAQ',
+    'Termin buchen',
+    'Termine können über das Formular „Termin anfragen“ auf der Website angefragt werden. Alternativ telefonisch oder per WhatsApp.',
+    true,
+    true,
+    1
+  ),
+  (
+    'FAQ',
+    'Walk-in möglich?',
+    'Walk-ins sind nach Verfügbarkeit möglich. Für garantierte Plätze empfehlen wir eine Terminanfrage.',
+    false,
+    true,
+    2
+  ),
+  (
+    'Richtlinien',
+    'Antwortstil',
+    'Kurz, präzise, premium. Keine erfundenen Preise oder Öffnungszeiten.',
+    true,
+    true,
+    3
+  );

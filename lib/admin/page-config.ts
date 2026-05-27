@@ -49,6 +49,12 @@ export const adminPageConfig: Record<string, AdminPageConfig> = {
     placeholderTitle: "SEO-Einstellungen",
     title: "SEO",
   },
+  "/admin/ki-assistent": {
+    description: "KI-Chat, System-Prompt, Wissensdatenbank und Verhalten.",
+    placeholderMessage: "KI-Einstellungen werden direkt in diesem Bereich verwaltet.",
+    placeholderTitle: "KI-Assistent",
+    title: "KI-Assistent",
+  },
 };
 
 export function getAdminPageConfig(pathname: string): AdminPageConfig {

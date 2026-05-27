@@ -55,6 +55,11 @@ export const adminNavItems: AdminNavItem[] = [
     href: "/admin/seo",
     label: "SEO",
   },
+  {
+    description: "KI-Chat, Prompt, Wissen und Verhalten",
+    href: "/admin/ki-assistent",
+    label: "KI-Assistent",
+  },
 ];
 
 export function getAdminNavItem(pathname: string) {

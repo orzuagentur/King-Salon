@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AiChatLauncher } from "@/components/ai/AiChatLauncher";
 import { FloatingContactActions } from "@/components/layout/FloatingContactActions";
 import { Navbar } from "@/components/layout/Navbar";
 import { ContactSection } from "@/components/sections/ContactSection";
@@ -40,6 +41,7 @@ export default async function Home() {
       <ReviewsSection />
       <ContactSection />
       <LocalBusinessInfo />
+      <AiChatLauncher />
       <FloatingContactActions phone={contact.phone} whatsappUrl={contact.whatsapp} />
     </>
   );

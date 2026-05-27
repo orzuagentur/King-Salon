@@ -9,6 +9,123 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ai_knowledge: {
+        Row: {
+          active: boolean;
+          category: string;
+          content: string;
+          created_at: string;
+          id: string;
+          pinned: boolean;
+          sort_order: number;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          active?: boolean;
+          category: string;
+          content: string;
+          created_at?: string;
+          id?: string;
+          pinned?: boolean;
+          sort_order?: number;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          active?: boolean;
+          category?: string;
+          content?: string;
+          created_at?: string;
+          id?: string;
+          pinned?: boolean;
+          sort_order?: number;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_memory: {
+        Row: {
+          active: boolean;
+          content: string;
+          created_at: string;
+          id: string;
+          pinned: boolean;
+          sort_order: number;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          active?: boolean;
+          content: string;
+          created_at?: string;
+          id?: string;
+          pinned?: boolean;
+          sort_order?: number;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          active?: boolean;
+          content?: string;
+          created_at?: string;
+          id?: string;
+          pinned?: boolean;
+          sort_order?: number;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_site_content_cache: {
+        Row: {
+          fingerprint: string;
+          id: string;
+          page_count: number;
+          payload: Json;
+          synced_at: string;
+        };
+        Insert: {
+          fingerprint: string;
+          id?: string;
+          page_count?: number;
+          payload: Json;
+          synced_at?: string;
+        };
+        Update: {
+          fingerprint?: string;
+          id?: string;
+          page_count?: number;
+          payload?: Json;
+          synced_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_settings: {
+        Row: {
+          behavior_notes: string | null;
+          id: string;
+          system_prompt: string | null;
+          tone: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          behavior_notes?: string | null;
+          id?: string;
+          system_prompt?: string | null;
+          tone?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          behavior_notes?: string | null;
+          id?: string;
+          system_prompt?: string | null;
+          tone?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       admins: {
         Row: {
           created_at: string;

@@ -34,3 +34,48 @@ export async function getBookingsForDate(dateIso: string) {
 
   return data;
 }
+
+export type BookingContextStats = {
+  nextSevenDays: {
+    confirmed: number;
+    pending: number;
+    total: number;
+  };
+};
+
+export async function getBookingContextStats(): Promise<BookingContextStats> {
+  const now = new Date();
+  const start = now.toISOString().slice(0, 10);
+  const endDate = new Date(now);
+  endDate.setDate(endDate.getDate() + 7);
+  const end = endDate.toISOString().slice(0, 10);
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("status")
+    .gte("appointment_date", start)
+    .lte("appointment_date", end)
+    .in("status", ["pending", "confirmed"]);
+
+  if (error || !data) {
+    return {
+      nextSevenDays: {
+        pending: 0,
+        confirmed: 0,
+        total: 0,
+      },
+    };
+  }
+
+  const pending = data.filter((row) => row.status === "pending").length;
+  const confirmed = data.filter((row) => row.status === "confirmed").length;
+
+  return {
+    nextSevenDays: {
+      pending,
+      confirmed,
+      total: pending + confirmed,
+    },
+  };
+}
