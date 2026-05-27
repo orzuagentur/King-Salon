@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { verifyAdminSession } from "@/lib/auth/verify-admin";
 import { defaultHomepageContent } from "@/lib/homepage/defaults";
+import { inferHomepageBackgroundMediaType } from "@/lib/homepage/media";
 import type { HomepageContent } from "@/lib/homepage/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -15,14 +16,21 @@ function getTextField(formData: FormData, key: string) {
 }
 
 function buildHomepagePayload(formData: FormData): HomepageContent {
+  const heroBackgroundImage =
+    getTextField(formData, "hero_background_image") ||
+    defaultHomepageContent.hero_background_image;
+  const heroBackgroundMediaType = inferHomepageBackgroundMediaType(
+    heroBackgroundImage,
+    getTextField(formData, "hero_background_media_type"),
+  );
+
   return {
     site_name: getTextField(formData, "site_name"),
     hero_eyebrow: getTextField(formData, "hero_eyebrow"),
     hero_title: getTextField(formData, "hero_title"),
     hero_subtitle: getTextField(formData, "hero_subtitle"),
-    hero_background_image:
-      getTextField(formData, "hero_background_image") ||
-      defaultHomepageContent.hero_background_image,
+    hero_background_image: heroBackgroundImage,
+    hero_background_media_type: heroBackgroundMediaType,
     hero_image: getTextField(formData, "hero_image") || defaultHomepageContent.hero_image,
     hero_image_alt:
       getTextField(formData, "hero_image_alt") || defaultHomepageContent.hero_image_alt,
@@ -85,6 +93,7 @@ export async function updateHomepageContent(formData: FormData) {
     hero_title: payload.hero_title,
     hero_subtitle: payload.hero_subtitle,
     hero_background_image: payload.hero_background_image,
+    hero_background_media_type: payload.hero_background_media_type,
     hero_image: payload.hero_image,
     hero_image_alt: payload.hero_image_alt,
     hero_card_street: payload.hero_card_street,

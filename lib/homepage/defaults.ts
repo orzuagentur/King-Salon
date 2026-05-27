@@ -7,6 +7,7 @@ export const defaultHomepageContent: HomepageContent = {
   hero_title: "Präzision. Stil. Königliche Ausstrahlung.",
   site_name: "King Salon",
   hero_background_image: "/images/salon-interior.png",
+  hero_background_media_type: "image",
   hero_image: "/images/barber-haarschnitt.png",
   hero_image_alt: "Präziser Haarschnitt im King Salon Celle",
   hero_card_street: "Hehlentorstraße 8",

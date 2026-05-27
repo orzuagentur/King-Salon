@@ -278,6 +278,7 @@ export type Database = {
       homepage_content: {
         Row: {
           hero_background_image: string;
+          hero_background_media_type: string;
           hero_card_city: string;
           hero_card_hours: string;
           hero_card_street: string;
@@ -294,6 +295,7 @@ export type Database = {
         };
         Insert: {
           hero_background_image?: string;
+          hero_background_media_type?: string;
           hero_card_city?: string;
           hero_card_hours?: string;
           hero_card_street?: string;
@@ -310,6 +312,7 @@ export type Database = {
         };
         Update: {
           hero_background_image?: string;
+          hero_background_media_type?: string;
           hero_card_city?: string;
           hero_card_hours?: string;
           hero_card_street?: string;

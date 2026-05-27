@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 
 import { LuxuryButton } from "@/components/ui/LuxuryButton";
+import { HeroBackgroundMedia } from "@/components/sections/HeroBackgroundMedia";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { resolveHomepageImageUrl } from "@/lib/homepage/images";
 import type { HomepageContent } from "@/lib/homepage/types";
@@ -22,7 +23,6 @@ export function LuxuryHeroClient({
   phone,
   phoneDisplay,
 }: LuxuryHeroClientProps) {
-  const heroBackgroundSrc = resolveHomepageImageUrl(content.hero_background_image);
   const heroImageSrc = resolveHomepageImageUrl(content.hero_image);
 
   const heroStats = [
@@ -34,14 +34,9 @@ export function LuxuryHeroClient({
   return (
     <section className="relative isolate flex min-h-[100dvh] overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <OptimizedImage
-          decorative
-          className="object-cover opacity-20"
-          fill
-          placeholder="empty"
-          quality={imageDefaults.qualityDecorative}
-          sizes={imageSizePresets.heroBackground}
-          src={heroBackgroundSrc}
+        <HeroBackgroundMedia
+          mediaType={content.hero_background_media_type}
+          src={content.hero_background_image}
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,164,93,0.22),transparent_34%),linear-gradient(180deg,rgba(5,5,5,0.35)_0%,#050505_88%)]" />
       </div>

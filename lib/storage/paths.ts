@@ -1,4 +1,7 @@
-import { STORAGE_ALLOWED_EXTENSIONS } from "@/lib/storage/constants";
+import {
+  STORAGE_ALLOWED_EXTENSIONS,
+  STORAGE_ALLOWED_VIDEO_EXTENSIONS,
+} from "@/lib/storage/constants";
 
 export function sanitizeFileName(fileName: string) {
   return fileName
@@ -21,5 +24,16 @@ export function isAllowedImageFile(file: File) {
   return (
     file.type.startsWith("image/") &&
     STORAGE_ALLOWED_EXTENSIONS.includes(extension as (typeof STORAGE_ALLOWED_EXTENSIONS)[number])
+  );
+}
+
+export function isAllowedVideoFile(file: File) {
+  const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+
+  return (
+    file.type.startsWith("video/") &&
+    STORAGE_ALLOWED_VIDEO_EXTENSIONS.includes(
+      extension as (typeof STORAGE_ALLOWED_VIDEO_EXTENSIONS)[number],
+    )
   );
 }

@@ -1,4 +1,5 @@
 import { defaultHomepageContent } from "@/lib/homepage/defaults";
+import { inferHomepageBackgroundMediaType } from "@/lib/homepage/media";
 import type { HomepageContent } from "@/lib/homepage/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -7,7 +8,7 @@ export async function getHomepageContent(): Promise<HomepageContent> {
   const { data, error } = await supabase
     .from("homepage_content")
     .select(
-      "hero_eyebrow, hero_title, hero_subtitle, site_name, hero_background_image, hero_image, hero_image_alt, hero_card_street, hero_card_city, hero_card_hours, hero_stat_location, hero_stat_style",
+      "hero_eyebrow, hero_title, hero_subtitle, site_name, hero_background_image, hero_background_media_type, hero_image, hero_image_alt, hero_card_street, hero_card_city, hero_card_hours, hero_stat_location, hero_stat_style",
     )
     .eq("id", "main")
     .maybeSingle();
@@ -23,6 +24,10 @@ export async function getHomepageContent(): Promise<HomepageContent> {
     site_name: data.site_name ?? defaultHomepageContent.site_name,
     hero_background_image:
       data.hero_background_image ?? defaultHomepageContent.hero_background_image,
+    hero_background_media_type: inferHomepageBackgroundMediaType(
+      data.hero_background_image ?? defaultHomepageContent.hero_background_image,
+      data.hero_background_media_type,
+    ),
     hero_image: data.hero_image ?? defaultHomepageContent.hero_image,
     hero_image_alt: data.hero_image_alt ?? defaultHomepageContent.hero_image_alt,
     hero_card_street: data.hero_card_street ?? defaultHomepageContent.hero_card_street,

@@ -1,6 +1,7 @@
 "use client";
 
 import { updateHomepageContent } from "@/app/admin/(dashboard)/startseite/actions";
+import { HomepageBackgroundMediaField } from "@/components/admin/homepage/HomepageBackgroundMediaField";
 import { HomepageImageField } from "@/components/admin/homepage/HomepageImageField";
 import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import type { HomepageContent } from "@/lib/homepage/types";
@@ -55,12 +56,9 @@ export function HomepageContentForm({ content }: HomepageContentFormProps) {
             Hero-Bilder
           </h3>
 
-          <HomepageImageField
+          <HomepageBackgroundMediaField
+            defaultMediaType={content.hero_background_media_type}
             defaultValue={content.hero_background_image}
-            description="Großes Hintergrundbild über der gesamten Hero-Sektion (dezent, mit Overlay)."
-            hiddenInputName="hero_background_image"
-            label="Hintergrundbild"
-            placeholder="/images/salon-interior.png"
           />
 
           <HomepageImageField

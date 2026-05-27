@@ -51,6 +51,7 @@ insert into public.homepage_content (
   id,
   site_name,
   hero_background_image,
+  hero_background_media_type,
   hero_image,
   hero_image_alt,
   hero_card_street,
@@ -66,6 +67,7 @@ values (
   'main',
   'King Salon',
   '/images/salon-interior.png',
+  'image',
   '/images/barber-haarschnitt.png',
   'Präziser Haarschnitt im King Salon Celle',
   'Hehlentorstraße 8',
@@ -80,6 +82,7 @@ values (
 on conflict (id) do update set
   site_name = excluded.site_name,
   hero_background_image = excluded.hero_background_image,
+  hero_background_media_type = excluded.hero_background_media_type,
   hero_image = excluded.hero_image,
   hero_image_alt = excluded.hero_image_alt,
   hero_card_street = excluded.hero_card_street,
