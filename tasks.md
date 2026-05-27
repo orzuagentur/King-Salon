@@ -304,7 +304,7 @@ AI должен читать:
 
 ## 17. Возможные будущие улучшения
 
-- Онлайн запись прямо в AI чате
+- Онлайн запись прямо в AI чате ✅
 - Voice AI
 - WhatsApp integration
 - Instagram DM integration

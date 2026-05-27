@@ -1,64 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 
-import { AiChatWindow } from "@/components/ai/AiChatWindow";
-
-function AiChatIcon({ open }: { open: boolean }) {
-  if (open) {
-    return (
-      <svg aria-hidden="true" className="h-6 w-6" fill="none" viewBox="0 0 24 24">
-        <path
-          d="m6 6 12 12M18 6 6 18"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="1.8"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg aria-hidden="true" className="h-6 w-6" fill="none" viewBox="0 0 24 24">
-      <path
-        d="M12 3a7 7 0 0 0-4 12.7V19l2.5-1.2a7 7 0 0 0 1.5.2 7 7 0 1 0 0-14Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.8"
-      />
-      <path
-        d="M9.5 11h5M9.5 14h3"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.8"
-      />
-    </svg>
-  );
-}
+import { AiSparkIcon } from "@/components/ai/AiSparkIcon";
 
 export function AiChatLauncher() {
-  const [open, setOpen] = useState(false);
-
-  function toggleChat() {
-    setOpen((current) => !current);
-  }
-
   return (
-    <div
-      className="fixed right-[max(1rem,env(safe-area-inset-right))] z-[60] flex flex-col items-end gap-3 bottom-[max(5.75rem,calc(env(safe-area-inset-bottom)+4.75rem))] md:bottom-[max(1rem,env(safe-area-inset-bottom))]"
+    <Link
+      aria-label="KI-Assistent öffnen"
+      className="group fixed right-[max(1rem,env(safe-area-inset-right))] z-[60] bottom-[max(5.75rem,calc(env(safe-area-inset-bottom)+4.75rem))] md:bottom-[max(1rem,env(safe-area-inset-bottom))]"
+      href="/ki-assistent"
     >
-      <AiChatWindow onClose={() => setOpen(false)} open={open} />
-
-      <button
-        aria-expanded={open}
-        aria-label={open ? "AI Chat schließen" : "AI Chat öffnen"}
-        className="touch-press flex h-14 w-14 items-center justify-center rounded-full border border-border bg-surface-elevated text-gold shadow-luxury transition hover:scale-[1.03] hover:border-gold/50 hover:bg-surface active:scale-95"
-        onClick={toggleChat}
-        type="button"
-      >
-        <AiChatIcon open={open} />
-      </button>
-    </div>
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 rounded-full bg-gold/25 blur-xl transition group-hover:bg-gold/35"
+      />
+      <span className="relative flex h-14 items-center gap-2.5 rounded-full border border-gold/40 bg-surface-elevated pl-3.5 pr-4 text-gold shadow-luxury transition group-hover:scale-[1.03] group-hover:border-gold/60 group-active:scale-95">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/15">
+          <AiSparkIcon className="h-5 w-5" />
+        </span>
+        <span className="flex flex-col items-start leading-none">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-gold-soft">
+            KI
+          </span>
+          <span className="mt-1 text-xs font-semibold tracking-[0.12em] text-foreground">
+            Assistent
+          </span>
+        </span>
+      </span>
+    </Link>
   );
 }

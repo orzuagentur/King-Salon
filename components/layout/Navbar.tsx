@@ -12,6 +12,7 @@ const navigationItems = [
   { href: "#galerie", label: "Galerie" },
   { href: "#bewertungen", label: "Bewertungen" },
   { href: "#kontakt", label: "Kontakt" },
+  { href: "/ki-assistent", label: "KI-Assistent", isRoute: true },
 ];
 
 const menuVariants = {
@@ -75,15 +76,25 @@ export function Navbar({ phone = "+491738882560", siteName = "King Salon" }: Nav
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">
-            {navigationItems.map((item) => (
-              <a
-                className="text-xs font-semibold uppercase tracking-[0.22em] text-muted transition hover:text-gold"
-                href={item.href}
-                key={item.href}
-              >
-                {item.label}
-              </a>
-            ))}
+            {navigationItems.map((item) =>
+              item.isRoute ? (
+                <Link
+                  className="text-xs font-semibold uppercase tracking-[0.22em] text-muted transition hover:text-gold"
+                  href={item.href}
+                  key={item.href}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  className="text-xs font-semibold uppercase tracking-[0.22em] text-muted transition hover:text-gold"
+                  href={item.href}
+                  key={item.href}
+                >
+                  {item.label}
+                </a>
+              ),
+            )}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -154,13 +165,23 @@ export function Navbar({ phone = "+491738882560", siteName = "King Salon" }: Nav
               <ul className="mt-6 flex flex-col gap-1">
                 {navigationItems.map((item, index) => (
                   <motion.li custom={index} key={item.href} variants={linkVariants}>
-                    <a
-                      className="touch-press flex min-h-14 items-center rounded-2xl border border-transparent px-4 text-lg font-semibold tracking-[-0.02em] text-foreground transition active:border-border active:bg-surface"
-                      href={item.href}
-                      onClick={closeMenu}
-                    >
-                      {item.label}
-                    </a>
+                    {item.isRoute ? (
+                      <Link
+                        className="touch-press flex min-h-14 items-center rounded-2xl border border-transparent px-4 text-lg font-semibold tracking-[-0.02em] text-foreground transition active:border-border active:bg-surface"
+                        href={item.href}
+                        onClick={closeMenu}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a
+                        className="touch-press flex min-h-14 items-center rounded-2xl border border-transparent px-4 text-lg font-semibold tracking-[-0.02em] text-foreground transition active:border-border active:bg-surface"
+                        href={item.href}
+                        onClick={closeMenu}
+                      >
+                        {item.label}
+                      </a>
+                    )}
                   </motion.li>
                 ))}
               </ul>
