@@ -63,7 +63,7 @@ export function FloatingContactActions({ phone, whatsappUrl }: FloatingContactAc
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-50 flex flex-col items-end gap-3 md:hidden">
+    <div className="mobile-contact-dock fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-50 flex flex-col items-end gap-3 md:hidden">
       {open ? (
         <div className="flex flex-col items-end gap-3">
           <a

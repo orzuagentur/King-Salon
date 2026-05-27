@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 
 import { isGeminiConfigured } from "@/lib/ai/config";
-import { generateGeminiReply, streamGeminiReply } from "@/lib/ai/gemini/server";
+import {
+  generateGeminiStructuredReply,
+  parseStreamedStructuredReply,
+  streamGeminiStructuredReply,
+} from "@/lib/ai/gemini/server";
 import { checkAntiSpam, checkRateLimit, getClientIp } from "@/lib/ai/rate-limit";
 import { parseChatRequestBody } from "@/lib/ai/validation";
 
@@ -34,7 +38,6 @@ export async function POST(request: Request) {
     }
 
     const clientIp = getClientIp(request);
-
     const body = await request.json();
     const parsed = parseChatRequestBody(body);
 
@@ -61,42 +64,11 @@ export async function POST(request: Request) {
       );
     }
 
-    if (parsed.stream) {
-      const streamResult = await streamGeminiReply(parsed.messages);
-      const encoder = new TextEncoder();
+    const structured = parsed.stream
+      ? await parseStreamedStructuredReply((await streamGeminiStructuredReply(parsed.messages)).stream)
+      : await generateGeminiStructuredReply(parsed.messages);
 
-      const readable = new ReadableStream({
-        async start(controller) {
-          try {
-            for await (const chunk of streamResult.stream) {
-              const text = chunk.text();
-
-              if (text) {
-                controller.enqueue(encoder.encode(text));
-              }
-            }
-
-            controller.close();
-          } catch (error) {
-            console.error("Gemini stream failed", error);
-            controller.error(error);
-          }
-        },
-      });
-
-      return new Response(readable, {
-        headers: {
-          "Cache-Control": "no-store",
-          "Content-Type": "text/plain; charset=utf-8",
-          "X-Content-Type-Options": "nosniff",
-          "X-Frame-Options": "DENY",
-        },
-      });
-    }
-
-    const content = await generateGeminiReply(parsed.messages);
-
-    return secureJson({ content });
+    return secureJson({ structured });
   } catch (error) {
     console.error("AI chat API failed", error);
 

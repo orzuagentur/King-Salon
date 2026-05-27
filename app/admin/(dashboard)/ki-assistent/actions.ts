@@ -28,6 +28,45 @@ async function assertAdmin() {
   return session;
 }
 
+export async function updateAiAgentSettings(formData: FormData) {
+  await assertAdmin();
+
+  const agentName = getTextField(formData, "agent_name");
+  const avatarPreset = getTextField(formData, "agent_avatar_preset");
+  const avatarUrl = getTextField(formData, "agent_avatar_url");
+  const welcomeMessage = getTextField(formData, "welcome_message");
+  const language = getTextField(formData, "language");
+  const themeColor = getTextField(formData, "theme_color");
+
+  if (!agentName || !welcomeMessage || !language || !themeColor) {
+    redirect("/admin/ki-assistent?fehler=Bitte%20alle%20Agent-Felder%20ausfüllen");
+  }
+
+  const agentAvatar =
+    avatarPreset === "custom" ? avatarUrl || "spark" : avatarPreset || "spark";
+
+  const payload = {
+    id: "main",
+    agent_name: agentName,
+    agent_avatar: agentAvatar,
+    welcome_message: welcomeMessage,
+    language,
+    theme_color: themeColor,
+  };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("ai_settings").upsert(payload, { onConflict: "id" });
+
+  if (error) {
+    redirect("/admin/ki-assistent?fehler=Agent-Einstellungen%20konnten%20nicht%20gespeichert%20werden");
+  }
+
+  invalidateContextCache();
+  revalidatePath("/admin/ki-assistent");
+  revalidatePath("/ki-assistent");
+  redirect("/admin/ki-assistent?erfolg=Agent-Einstellungen%20gespeichert");
+}
+
 export async function updateAiSettings(formData: FormData) {
   await assertAdmin();
 

@@ -1,33 +1,33 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 import { AiSparkIcon } from "@/components/ai/AiSparkIcon";
 
 export function AiChatLauncher() {
   return (
-    <Link
-      aria-label="KI-Assistent öffnen"
-      className="group fixed right-[max(1rem,env(safe-area-inset-right))] z-[60] bottom-[max(5.75rem,calc(env(safe-area-inset-bottom)+4.75rem))] md:bottom-[max(1rem,env(safe-area-inset-bottom))]"
-      href="/ki-assistent"
+    <motion.div
+      animate={{ opacity: 1, scale: 1 }}
+      className="ai-chat-launcher fixed z-[60] bottom-[max(5.75rem,calc(env(safe-area-inset-bottom)+4.75rem))] right-[max(1rem,env(safe-area-inset-right))] md:bottom-[max(1rem,env(safe-area-inset-bottom))]"
+      initial={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span
-        aria-hidden="true"
-        className="absolute inset-0 rounded-full bg-gold/25 blur-xl transition group-hover:bg-gold/35"
-      />
-      <span className="relative flex h-14 items-center gap-2.5 rounded-full border border-gold/40 bg-surface-elevated pl-3.5 pr-4 text-gold shadow-luxury transition group-hover:scale-[1.03] group-hover:border-gold/60 group-active:scale-95">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/15">
-          <AiSparkIcon className="h-5 w-5" />
-        </span>
-        <span className="flex flex-col items-start leading-none">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-gold-soft">
-            KI
-          </span>
-          <span className="mt-1 text-xs font-semibold tracking-[0.12em] text-foreground">
-            Assistent
-          </span>
-        </span>
-      </span>
-    </Link>
+      <Link
+        aria-label="KI-Assistent öffnen"
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-surface-elevated text-gold shadow-luxury transition duration-300 hover:scale-105 hover:border-gold/70 active:scale-95"
+        href="/ki-assistent"
+      >
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full bg-gold/20 opacity-70 blur-md transition group-hover:opacity-100"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full border border-gold/20 animate-pulse [animation-duration:2.8s]"
+        />
+        <AiSparkIcon className="relative h-6 w-6" />
+      </Link>
+    </motion.div>
   );
 }

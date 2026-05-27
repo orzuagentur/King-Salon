@@ -10,10 +10,11 @@ import type { AiChatMessage } from "@/lib/ai/types";
 type AiChatMessagesProps = {
   isTyping: boolean;
   messages: AiChatMessage[];
+  onBook?: () => void;
+  onRetry?: (messageId: string) => void;
 };
 
-export function AiChatMessages({ isTyping, messages }: AiChatMessagesProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+export function AiChatMessages({ isTyping, messages, onBook, onRetry }: AiChatMessagesProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,13 +23,17 @@ export function AiChatMessages({ isTyping, messages }: AiChatMessagesProps) {
 
   return (
     <div
-      className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-4 sm:px-5"
-      ref={scrollRef}
+      className="ai-chat-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-5 sm:px-6 lg:px-8"
       style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
     >
-      <div className="flex flex-col gap-4">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
         {messages.map((message) => (
-          <AiChatMessageBubble key={message.id} message={message} />
+          <AiChatMessageBubble
+            key={message.id}
+            message={message}
+            onBook={onBook}
+            onRetry={onRetry}
+          />
         ))}
         <AnimatePresence initial={false}>
           {isTyping ? (

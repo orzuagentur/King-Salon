@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
+import { AiChatErrorBoundary } from "@/components/ai/AiChatErrorBoundary";
 import { AiChatExperience } from "@/components/ai/AiChatExperience";
-import { getHomepageContent } from "@/lib/data/homepage";
+import { getAiAgentConfig } from "@/lib/data/ai-agent";
 import { getActiveMasters } from "@/lib/data/masters";
 import { getSalonContact } from "@/lib/data/settings";
 import { createLocalPageMetadata } from "@/lib/seo/metadata";
@@ -16,17 +17,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function KiAssistentPage() {
-  const [contact, masters, homepage] = await Promise.all([
+  const [contact, masters, agent] = await Promise.all([
     getSalonContact(),
     getActiveMasters(),
-    getHomepageContent(),
+    getAiAgentConfig(),
   ]);
 
   return (
-    <AiChatExperience
-      masters={masters}
-      siteName={homepage.site_name}
-      whatsappUrl={contact.whatsapp}
-    />
+    <AiChatErrorBoundary>
+      <AiChatExperience agent={agent} masters={masters} whatsappUrl={contact.whatsapp} />
+    </AiChatErrorBoundary>
   );
 }

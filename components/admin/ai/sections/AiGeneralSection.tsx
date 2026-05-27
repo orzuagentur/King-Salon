@@ -1,4 +1,6 @@
+import { AiAgentSettingsForm } from "@/components/admin/ai/AiAgentSettingsForm";
 import { AiSectionShell } from "@/components/admin/ai/AiSectionShell";
+import { defaultAiAgentConfig } from "@/lib/ai/agent/types";
 import { getAiAdminSection } from "@/lib/admin/ai-sections";
 import type { AiAdminOverview } from "@/lib/data/ai-admin";
 
@@ -32,7 +34,7 @@ export function AiGeneralSection({ overview }: AiGeneralSectionProps) {
         <StatTile
           hint="Sichtbar auf der Website für Besucher"
           label="Chat-Assistent"
-          value="King Salon Assistent"
+          value={overview.settings?.agent_name ?? defaultAiAgentConfig.agentName}
         />
         <StatTile
           hint={overview.geminiConfigured ? "GEMINI_API_KEY ist gesetzt" : "Schlüssel in .env fehlt"}
@@ -74,6 +76,8 @@ export function AiGeneralSection({ overview }: AiGeneralSectionProps) {
           <li>Standard-Verhalten und Prompt-Einstellungen</li>
         </ol>
       </div>
+
+      <AiAgentSettingsForm settings={overview.settings} />
 
       {!overview.geminiConfigured ? (
         <p className="mt-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">

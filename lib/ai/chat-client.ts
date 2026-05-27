@@ -1,37 +1,38 @@
+import type { AiStructuredResponse } from "@/lib/ai/structured/types";
 import type { AiChatMessage } from "@/lib/ai/types";
+
+export type AiChatApiResult = {
+  structured: AiStructuredResponse;
+};
 
 type SendChatOptions = {
   messages: AiChatMessage[];
-  onStreamChunk?: (chunk: string) => void;
 };
 
 function toApiMessages(messages: AiChatMessage[]) {
   return messages
-    .filter((message) => message.id !== "welcome")
+    .filter((message) => message.id !== "welcome" && message.status !== "error")
     .map((message) => ({
       role: message.role,
-      content: message.content,
+      content: message.structured?.text ?? message.content,
     }));
 }
 
 async function parseErrorResponse(response: Response) {
   try {
     const data = (await response.json()) as { error?: string };
-
     return data.error ?? "Anfrage fehlgeschlagen.";
   } catch {
     return "Anfrage fehlgeschlagen.";
   }
 }
 
-export async function sendChatToApi({ messages, onStreamChunk }: SendChatOptions) {
+export async function sendChatToApi({ messages }: SendChatOptions): Promise<AiChatApiResult> {
   const apiMessages = toApiMessages(messages);
 
   if (apiMessages.length === 0) {
     throw new Error("Keine Nachricht zum Senden.");
   }
-
-  const useStream = Boolean(onStreamChunk);
 
   const response = await fetch("/api/ai/chat", {
     method: "POST",
@@ -40,7 +41,7 @@ export async function sendChatToApi({ messages, onStreamChunk }: SendChatOptions
     },
     body: JSON.stringify({
       messages: apiMessages,
-      stream: useStream,
+      stream: true,
     }),
   });
 
@@ -48,37 +49,11 @@ export async function sendChatToApi({ messages, onStreamChunk }: SendChatOptions
     throw new Error(await parseErrorResponse(response));
   }
 
-  if (useStream && response.body) {
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = "";
+  const data = (await response.json()) as { structured?: AiStructuredResponse; error?: string };
 
-    while (true) {
-      const { done, value } = await reader.read();
-
-      if (done) {
-        break;
-      }
-
-      const chunk = decoder.decode(value, { stream: true });
-      fullText += chunk;
-      onStreamChunk?.(chunk);
-    }
-
-    const trimmed = fullText.trim();
-
-    if (!trimmed) {
-      throw new Error("Leere Antwort vom Assistenten.");
-    }
-
-    return trimmed;
-  }
-
-  const data = (await response.json()) as { content?: string; error?: string };
-
-  if (!data.content) {
+  if (!data.structured?.text) {
     throw new Error(data.error ?? "Leere Antwort vom Assistenten.");
   }
 
-  return data.content;
+  return { structured: data.structured };
 }

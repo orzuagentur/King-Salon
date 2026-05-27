@@ -15,10 +15,15 @@ export type ContextSection = {
 
 export type AiSettingsRow = {
   id: string;
-  system_prompt: string | null;
-  tone: string | null;
+  agent_avatar: string | null;
+  agent_name: string | null;
   behavior_notes: string | null;
+  language: string | null;
+  system_prompt: string | null;
+  theme_color: string | null;
+  tone: string | null;
   updated_at: string;
+  welcome_message: string | null;
 };
 
 export type AiKnowledgeRow = {

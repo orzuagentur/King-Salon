@@ -1,141 +1,64 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 
-import { AiBookingInline } from "@/components/ai/AiBookingInline";
+import { AiAgentAvatar } from "@/components/ai/AiAgentAvatar";
 import { AiChatComposer } from "@/components/ai/AiChatComposer";
 import { AiChatMessages } from "@/components/ai/AiChatMessages";
-import { AiChatQuickActions } from "@/components/ai/AiChatQuickActions";
-import { AiSparkIcon } from "@/components/ai/AiSparkIcon";
-import { sendChatToApi } from "@/lib/ai/chat-client";
-import { createMessageId } from "@/lib/ai/format";
+import { useAiChat } from "@/lib/ai/chat/use-ai-chat";
+import { useVisualViewportOffset } from "@/lib/ai/chat/use-visual-viewport";
+import type { AiAgentConfig } from "@/lib/ai/agent/types";
 import type { MasterOption } from "@/lib/booking/types";
-import type { AiChatMessage } from "@/lib/ai/types";
 
-const WELCOME_MESSAGE: AiChatMessage = {
-  id: "welcome",
-  role: "assistant",
-  content:
-    "Willkommen bei King Salon Celle. Ich helfe bei Leistungen, Preisen und Öffnungszeiten — und Sie können hier direkt einen Termin buchen.",
-  createdAt: new Date().toISOString(),
-};
+const AiBookingInline = dynamic(
+  () => import("@/components/ai/AiBookingInline").then((module) => module.AiBookingInline),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="mx-auto h-24 w-full max-w-3xl animate-pulse rounded-2xl border border-border bg-surface-elevated" />
+    ),
+  },
+);
 
 type AiChatExperienceProps = {
+  agent: AiAgentConfig;
   masters: MasterOption[];
-  siteName?: string;
   whatsappUrl: string;
 };
 
-function isBookingIntent(text: string) {
-  return /(termin|buchen|buchung|reservier|appointment|uhrzeit.*frei)/i.test(text);
-}
-
-export function AiChatExperience({ masters, siteName = "King Salon", whatsappUrl }: AiChatExperienceProps) {
-  const [messages, setMessages] = useState<AiChatMessage[]>([WELCOME_MESSAGE]);
-  const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function AiChatExperience({ agent, masters, whatsappUrl }: AiChatExperienceProps) {
   const [showBooking, setShowBooking] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  const appendAssistantMessage = useCallback((content: string) => {
-    setMessages((current) => [
-      ...current,
-      {
-        id: createMessageId(),
-        role: "assistant",
-        content,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
-  }, []);
+  useVisualViewportOffset();
 
   const openBooking = useCallback(() => {
     setShowBooking(true);
-    appendAssistantMessage(
-      "Gerne — hier können Sie Ihren Termin direkt anfragen. Wählen Sie Datum, Uhrzeit und Meister.",
-    );
-  }, [appendAssistantMessage]);
+  }, []);
 
-  const handleSend = useCallback(
-    async (rawValue: string) => {
-      const content = rawValue.trim();
+  const {
+    messages,
+    input,
+    isTyping,
+    error,
+    hydrated,
+    setInput,
+    setError,
+    sendMessage,
+    retryMessage,
+    appendAssistantMessage,
+  } = useAiChat({ agent, onOpenBooking: openBooking });
 
-      if (!content || isTyping) {
-        return;
-      }
+  useEffect(() => {
+    document.body.dataset.aiChatPage = "true";
+    document.body.style.overflow = "hidden";
 
-      if (isBookingIntent(content)) {
-        openBooking();
-      }
-
-      const userMessage: AiChatMessage = {
-        id: createMessageId(),
-        role: "user",
-        content,
-        createdAt: new Date().toISOString(),
-      };
-
-      const nextMessages = [...messages, userMessage];
-      const assistantId = createMessageId();
-      const assistantShell: AiChatMessage = {
-        id: assistantId,
-        role: "assistant",
-        content: "",
-        createdAt: new Date().toISOString(),
-      };
-
-      setError(null);
-      setMessages([...nextMessages, assistantShell]);
-      setInput("");
-      setIsTyping(true);
-
-      try {
-        const reply = await sendChatToApi({
-          messages: nextMessages,
-          onStreamChunk: (chunk) => {
-            setMessages((current) =>
-              current.map((message) =>
-                message.id === assistantId
-                  ? { ...message, content: message.content + chunk }
-                  : message,
-              ),
-            );
-          },
-        });
-
-        setMessages((current) =>
-          current.map((message) =>
-            message.id === assistantId ? { ...message, content: reply } : message,
-          ),
-        );
-      } catch (sendError) {
-        setMessages((current) => current.filter((message) => message.id !== assistantId));
-
-        const message =
-          sendError instanceof Error
-            ? sendError.message
-            : "Nachricht konnte nicht gesendet werden. Bitte erneut versuchen.";
-
-        setError(message);
-      } finally {
-        setIsTyping(false);
-      }
-    },
-    [isTyping, messages, openBooking],
-  );
-
-  function handleQuickPrompt(text: string) {
-    void handleSend(text);
-  }
+    return () => {
+      delete document.body.dataset.aiChatPage;
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   function handleInputChange(value: string) {
     setInput(value);
@@ -151,48 +74,63 @@ export function AiChatExperience({ masters, siteName = "King Salon", whatsappUrl
     setShowBooking(false);
   }
 
-  const lastMessage = messages.at(-1);
-  const showTypingIndicator =
-    isTyping && lastMessage?.role === "assistant" && !lastMessage.content;
+  const themeStyle = {
+    "--ai-accent": agent.themeColor,
+  } as CSSProperties;
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background">
-      <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
+    <div className="ai-chat-shell flex h-dvh flex-col bg-background" style={themeStyle}>
+      <header className="sticky top-0 z-20 shrink-0 border-b border-border bg-background/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold/35 bg-gold/10 text-gold">
-              <AiSparkIcon className="h-5 w-5" />
-            </span>
+            <AiAgentAvatar avatar={agent.agentAvatar} size="md" />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold tracking-[-0.02em] text-foreground">
-                {siteName} KI-Assistent
+                {agent.agentName}
               </p>
               <p className="mt-0.5 flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-muted">
                 <span
                   aria-hidden="true"
-                  className={`h-1.5 w-1.5 rounded-full ${isTyping ? "animate-pulse bg-gold" : "bg-emerald-400"}`}
+                  className={`h-1.5 w-1.5 rounded-full ${isTyping ? "animate-pulse bg-[var(--ai-accent)]" : "bg-emerald-400"}`}
                 />
-                {isTyping ? "Schreibt…" : "Online · Terminbuchung aktiv"}
+                {isTyping ? "Schreibt…" : "Online"}
               </p>
             </div>
           </div>
           <Link
-            className="touch-press shrink-0 rounded-full border border-border px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted transition hover:border-gold hover:text-gold"
+            className="touch-press shrink-0 rounded-full border border-border px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted transition hover:border-[var(--ai-accent)] hover:text-[var(--ai-accent)]"
             href="/"
           >
-            Zur Website
+            Schließen
           </Link>
         </div>
       </header>
 
       <main className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col">
-        <AiChatMessages isTyping={showTypingIndicator} messages={messages} />
+        {!hydrated ? (
+          <div className="flex flex-1 items-center justify-center px-6">
+            <span
+              aria-hidden="true"
+              className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-[var(--ai-accent)]"
+            />
+            <span className="sr-only">Chat wird geladen</span>
+          </div>
+        ) : (
+          <AiChatMessages
+            isTyping={false}
+            messages={messages}
+            onBook={openBooking}
+            onRetry={(messageId) => {
+              void retryMessage(messageId);
+            }}
+          />
+        )}
 
         <AnimatePresence initial={false}>
           {showBooking ? (
             <motion.div
               animate={{ opacity: 1, y: 0 }}
-              className="shrink-0 px-4 pb-3 sm:px-6"
+              className="shrink-0 px-4 pb-2 sm:px-6"
               exit={{ opacity: 0, y: 8 }}
               initial={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.25 }}
@@ -207,22 +145,17 @@ export function AiChatExperience({ masters, siteName = "King Salon", whatsappUrl
           ) : null}
         </AnimatePresence>
 
-        <div className="shrink-0 space-y-3 border-t border-border bg-background/80 px-4 py-3 backdrop-blur-sm sm:px-6">
-          <AiChatQuickActions
-            disabled={isTyping}
-            onBook={openBooking}
-            onPrompt={handleQuickPrompt}
-          />
-          <AiChatComposer
-            disabled={isTyping}
-            error={error}
-            isLoading={isTyping}
-            onChange={handleInputChange}
-            onDismissError={() => setError(null)}
-            onSend={handleSend}
-            value={input}
-          />
-        </div>
+        <AiChatComposer
+          disabled={isTyping || !hydrated}
+          error={error}
+          isLoading={isTyping}
+          onChange={handleInputChange}
+          onDismissError={() => setError(null)}
+          onSend={(value) => {
+            void sendMessage(value);
+          }}
+          value={input}
+        />
       </main>
     </div>
   );

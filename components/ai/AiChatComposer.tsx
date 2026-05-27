@@ -64,16 +64,18 @@ export function AiChatComposer({
   }
 
   function handleFocus() {
-    textareaRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    requestAnimationFrame(() => {
+      textareaRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+    });
   }
 
   return (
-    <div className="shrink-0 border-t border-border bg-background/80 backdrop-blur-sm">
+    <div className="ai-chat-composer shrink-0 border-t border-border bg-background/90 backdrop-blur-md">
       <AnimatePresence initial={false}>
         {error ? (
           <motion.div
             animate={{ opacity: 1, y: 0 }}
-            className="mx-4 mt-3 flex items-start justify-between gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 sm:mx-5"
+            className="mx-4 mt-3 flex items-start justify-between gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 sm:mx-6"
             exit={{ opacity: 0, y: -6 }}
             initial={{ opacity: 0, y: -6 }}
             role="alert"
@@ -94,7 +96,7 @@ export function AiChatComposer({
         ) : null}
       </AnimatePresence>
 
-      <form className="px-4 py-3 sm:px-5" onSubmit={handleSubmit}>
+      <form className="px-4 py-3 sm:px-6" onSubmit={handleSubmit}>
         <div className="flex items-end gap-2">
           <label className="sr-only" htmlFor="ai-chat-input">
             Nachricht an den Assistenten
@@ -102,14 +104,15 @@ export function AiChatComposer({
           <textarea
             autoCapitalize="sentences"
             autoCorrect="on"
-            className="min-h-11 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-2.5 text-sm leading-6 text-foreground outline-none transition placeholder:text-muted focus:border-gold disabled:cursor-not-allowed disabled:opacity-60"
+            className="min-h-11 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-2.5 text-base leading-6 text-foreground outline-none transition placeholder:text-muted focus:border-[var(--ai-accent)] disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
             disabled={isBlocked}
             enterKeyHint="send"
             id="ai-chat-input"
+            inputMode="text"
             onChange={(event) => onChange(event.target.value)}
             onFocus={handleFocus}
             onKeyDown={handleKeyDown}
-            placeholder={isLoading ? "Assistent antwortet…" : "Ihre Frage…"}
+            placeholder={isLoading ? "Assistent antwortet…" : "Nachricht…"}
             ref={textareaRef}
             rows={1}
             value={value}
@@ -117,7 +120,7 @@ export function AiChatComposer({
           <button
             aria-busy={isLoading}
             aria-label={isLoading ? "Nachricht wird gesendet" : "Nachricht senden"}
-            className="touch-press flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold bg-gold text-black transition hover:scale-[1.03] hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-50"
+            className="touch-press flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--ai-accent)] bg-[var(--ai-accent)] text-black transition hover:scale-[1.03] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isBlocked || !value.trim()}
             type="submit"
           >
@@ -139,9 +142,6 @@ export function AiChatComposer({
             )}
           </button>
         </div>
-        <p className="mt-2 hidden text-[10px] text-muted sm:block">
-          Enter senden · Shift + Enter neue Zeile
-        </p>
       </form>
     </div>
   );

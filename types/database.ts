@@ -104,25 +104,40 @@ export type Database = {
       };
       ai_settings: {
         Row: {
+          agent_avatar: string | null;
+          agent_name: string | null;
           behavior_notes: string | null;
           id: string;
+          language: string;
           system_prompt: string | null;
+          theme_color: string;
           tone: string | null;
           updated_at: string;
+          welcome_message: string | null;
         };
         Insert: {
+          agent_avatar?: string | null;
+          agent_name?: string | null;
           behavior_notes?: string | null;
           id?: string;
+          language?: string;
           system_prompt?: string | null;
+          theme_color?: string;
           tone?: string | null;
           updated_at?: string;
+          welcome_message?: string | null;
         };
         Update: {
+          agent_avatar?: string | null;
+          agent_name?: string | null;
           behavior_notes?: string | null;
           id?: string;
+          language?: string;
           system_prompt?: string | null;
+          theme_color?: string;
           tone?: string | null;
           updated_at?: string;
+          welcome_message?: string | null;
         };
         Relationships: [];
       };

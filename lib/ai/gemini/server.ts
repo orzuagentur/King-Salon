@@ -2,6 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 import { AI_CHAT_LIMITS, getGeminiApiKey, getGeminiModel } from "@/lib/ai/config";
 import { buildAiSystemInstruction } from "@/lib/ai/context/engine";
+import { aiResponseSchema, structuredResponseInstruction } from "@/lib/ai/gemini/structured-schema";
+import { parseStructuredResponse } from "@/lib/ai/structured/parse";
+import type { AiStructuredResponse } from "@/lib/ai/structured/types";
 import type { ChatApiMessage } from "@/lib/ai/validation";
 
 function getGeminiClient() {
@@ -31,7 +34,6 @@ function trimMessagesForModel(messages: ChatApiMessage[]) {
     const message = messages[index];
     const nextSize = totalChars + message.content.length;
 
-    // Always keep the most recent user message.
     if (result.length === 0 && message.role === "user") {
       result.unshift(message);
       totalChars = nextSize;
@@ -55,15 +57,28 @@ function trimMessagesForModel(messages: ChatApiMessage[]) {
   return result;
 }
 
-export async function generateGeminiReply(messages: ChatApiMessage[]) {
+async function createModel(messages: ChatApiMessage[]) {
   const optimizedMessages = trimMessagesForModel(messages);
-  const systemInstruction = await buildAiSystemInstruction({ messages: optimizedMessages });
+  const systemInstruction = `${await buildAiSystemInstruction({ messages: optimizedMessages })}\n\n${structuredResponseInstruction}`;
   const client = getGeminiClient();
-  const model = client.getGenerativeModel({
-    model: getGeminiModel(),
-    systemInstruction,
-  });
 
+  return {
+    model: client.getGenerativeModel({
+      model: getGeminiModel(),
+      systemInstruction,
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: aiResponseSchema,
+      },
+    }),
+    optimizedMessages,
+  };
+}
+
+export async function generateGeminiStructuredReply(
+  messages: ChatApiMessage[],
+): Promise<AiStructuredResponse> {
+  const { model, optimizedMessages } = await createModel(messages);
   const lastMessage = optimizedMessages.at(-1);
 
   if (!lastMessage || lastMessage.role !== "user") {
@@ -81,18 +96,11 @@ export async function generateGeminiReply(messages: ChatApiMessage[]) {
     throw new Error("Leere Antwort vom KI-Dienst.");
   }
 
-  return text;
+  return parseStructuredResponse(text);
 }
 
-export async function streamGeminiReply(messages: ChatApiMessage[]) {
-  const optimizedMessages = trimMessagesForModel(messages);
-  const systemInstruction = await buildAiSystemInstruction({ messages: optimizedMessages });
-  const client = getGeminiClient();
-  const model = client.getGenerativeModel({
-    model: getGeminiModel(),
-    systemInstruction,
-  });
-
+export async function streamGeminiStructuredReply(messages: ChatApiMessage[]) {
+  const { model, optimizedMessages } = await createModel(messages);
   const lastMessage = optimizedMessages.at(-1);
 
   if (!lastMessage || lastMessage.role !== "user") {
@@ -104,4 +112,21 @@ export async function streamGeminiReply(messages: ChatApiMessage[]) {
   });
 
   return chat.sendMessageStream(lastMessage.content);
+}
+
+export async function parseStreamedStructuredReply(stream: AsyncIterable<{ text: () => string }>) {
+  let raw = "";
+
+  for await (const chunk of stream) {
+    const text = chunk.text();
+    if (text) {
+      raw += text;
+    }
+  }
+
+  if (!raw.trim()) {
+    throw new Error("Leere Antwort vom KI-Dienst.");
+  }
+
+  return parseStructuredResponse(raw);
 }

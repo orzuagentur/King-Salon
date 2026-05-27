@@ -206,3 +206,28 @@ body {
     opacity: 0.94;
   }
 }
+
+/* Full-page AI chat — keyboard, safe-area, hide mobile docks */
+.ai-chat-shell {
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
+.ai-chat-composer {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), var(--ai-kb-offset, 0px));
+}
+
+.ai-chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--gold) 35%, transparent) transparent;
+}
+
+body[data-ai-chat-page="true"] {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body[data-ai-chat-page="true"] .mobile-contact-dock,
+body[data-ai-chat-page="true"] .ai-chat-launcher {
+  display: none !important;
+}
